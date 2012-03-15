@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{232BFF8E-F233-4B6B-B1D0-0A901736D949}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Saaspose.SDK</RootNamespace>
+    <AssemblyName>Saaspose.SDK</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Libraries\JSON.NET\Bin\Net20\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BarCode\BarcodeBuilder.cs" />
+    <Compile Include="BarCode\BarcodeReader.cs" />
+    <Compile Include="BarCode\Enums\BarCodeReadType.cs" />
+    <Compile Include="BarCode\Enums\BarCodeType.cs" />
+    <Compile Include="BarCode\Enums\ImageFormat.cs" />
+    <Compile Include="BarCode\Enums\SaveLocation.cs" />
+    <Compile Include="BarCode\GenerationResponse.cs" />
+    <Compile Include="BarCode\RecognitionResponse.cs" />
+    <Compile Include="BarCode\RecognizedBarcode.cs" />
+    <Compile Include="Cells\AutoShape.cs" />
+    <Compile Include="Cells\Border.cs" />
+    <Compile Include="Cells\Cell.cs" />
+    <Compile Include="Cells\CellArea.cs" />
+    <Compile Include="Cells\Chart.cs" />
+    <Compile Include="Cells\Color.cs" />
+    <Compile Include="Cells\Comment.cs" />
+    <Compile Include="Cells\DocumentProperty.cs" />
+    <Compile Include="Cells\Encryption.cs" />
+    <Compile Include="Cells\Enums\EncryptionType.cs" />
+    <Compile Include="Cells\Enums\ImageFormat.cs" />
+    <Compile Include="Cells\Enums\Position.cs" />
+    <Compile Include="Cells\Enums\ProtectionType.cs" />
+    <Compile Include="Cells\Enums\SaveFormat.cs" />
+    <Compile Include="Cells\Enums\SaveLocation.cs" />
+    <Compile Include="Cells\Font.cs" />
+    <Compile Include="Cells\Hyperlink.cs" />
+    <Compile Include="Cells\MergedCell.cs" />
+    <Compile Include="Cells\MoveWorksheet.cs" />
+    <Compile Include="Cells\Name.cs" />
+    <Compile Include="Cells\OleObject.cs" />
+    <Compile Include="Cells\Picture.cs" />
+    <Compile Include="Cells\Protection.cs" />
+    <Compile Include="Cells\ResponseHandlers\AutoShapesResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\CalculateFormulaResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\CellsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\ChartsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\CommentsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\ConditionalFormattingResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\DocumentPropertiesResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\HyperlinksResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\LinkResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\MergedCellsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\NamesResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\OleObjectsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\PicturesResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\TextItemsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\ValidationsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\WorkbookResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\WorksheetResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\WorksheetsResponse.cs" />
+    <Compile Include="Cells\Style.cs" />
+    <Compile Include="Cells\TextItem.cs" />
+    <Compile Include="Cells\Validation.cs" />
+    <Compile Include="Cells\Workbook.cs" />
+    <Compile Include="Cells\Worksheet.cs" />
+    <Compile Include="Common\BaseResponse.cs" />
+    <Compile Include="Common\Product.cs" />
+    <Compile Include="Common\SaasposeApp.cs" />
+    <Compile Include="Common\Utils.cs" />
+    <Compile Include="Pdf\Color.cs" />
+    <Compile Include="Pdf\ResponseHandlers\DocumentPropertyValue.cs" />
+    <Compile Include="Pdf\ResponseHandlers\DocumentPropertyRequest.cs" />
+    <Compile Include="Pdf\TextFormat.cs" />
+    <Compile Include="Pdf\ResponseHandlers\TextFormatResponse.cs" />
+    <Compile Include="Pdf\TextItem.cs" />
+    <Compile Include="Pdf\Extractor.cs" />
+    <Compile Include="Pdf\Enums\ConvertImageFormat.cs" />
+    <Compile Include="Pdf\Enums\SaveFormat.cs" />
+    <Compile Include="Pdf\Enums\SaveLocation.cs" />
+    <Compile Include="Pdf\Enums\ExtractImageFormat.cs" />
+    <Compile Include="Pdf\Converter.cs" />
+    <Compile Include="Pdf\ResponseHandlers\TextItemsEnvelop.cs" />
+    <Compile Include="Pdf\ResponseHandlers\TextItemsResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\TextItemResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\ImageResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\ImagesEnvelop.cs" />
+    <Compile Include="Pdf\ResponseHandlers\ImagesResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\FormFieldResponse.cs" />
+    <Compile Include="Pdf\FormField.cs" />
+    <Compile Include="Pdf\ResponseHandlers\FormFieldsEnvelop.cs" />
+    <Compile Include="Pdf\ResponseHandlers\DocumentPropertiesEnvelop.cs" />
+    <Compile Include="Pdf\Document.cs" />
+    <Compile Include="Pdf\ResponseHandlers\DocumentPropertiesResponse.cs" />
+    <Compile Include="Pdf\DocumentProperty.cs" />
+    <Compile Include="Pdf\ResponseHandlers\DocumentPropertyResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\FormFieldsResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\LinkResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\PageResponse.cs" />
+    <Compile Include="Pdf\ResponseHandlers\PagesEnvelop.cs" />
+    <Compile Include="Pdf\ResponseHandlers\PagesResponse.cs" />
+    <Compile Include="Pdf\TextEditor.cs" />
+    <Compile Include="Slides\Document.cs" />
+    <Compile Include="Slides\DocumentProperty.cs" />
+    <Compile Include="Slides\Enums\ImageFormat.cs" />
+    <Compile Include="Slides\Enums\SaveFormat.cs" />
+    <Compile Include="Slides\Extractor.cs" />
+    <Compile Include="Slides\ResponseHandlers\DocumentPropertiesEnvelop.cs" />
+    <Compile Include="Slides\ResponseHandlers\DocumentPropertiesResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\DocumentPropertyResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\FillFormatURI.cs" />
+    <Compile Include="Slides\ResponseHandlers\ImageResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\ImagesEnvelop.cs" />
+    <Compile Include="Slides\ResponseHandlers\ImagesResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\LineFormatURI.cs" />
+    <Compile Include="Slides\ResponseHandlers\LinkResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\ShapeResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\ShapesEnvelop.cs" />
+    <Compile Include="Slides\ResponseHandlers\ShapesResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\ShapeURI.cs" />
+    <Compile Include="Slides\ResponseHandlers\SlideResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\SlidesEnvelop.cs" />
+    <Compile Include="Slides\ResponseHandlers\SlidesResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\TextItemsEnvelop.cs" />
+    <Compile Include="Slides\ResponseHandlers\TextItemsResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\UriResponse.cs" />
+    <Compile Include="Slides\Shape.cs" />
+    <Compile Include="Slides\TextItem.cs" />
+    <Compile Include="Storage\DiscResponse.cs" />
+    <Compile Include="Storage\DiscUsage.cs" />
+    <Compile Include="Storage\ExistResponse.cs" />
+    <Compile Include="Storage\File.cs" />
+    <Compile Include="Storage\FileCollection.cs" />
+    <Compile Include="Storage\FileExist.cs" />
+    <Compile Include="Storage\Folder.cs" />
+    <Compile Include="Storage\FolderResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Words\Converter.cs" />
+    <Compile Include="Words\Document.cs" />
+    <Compile Include="Words\DocumentPropertiesResponse.cs" />
+    <Compile Include="Words\DocumentProperty.cs" />
+    <Compile Include="Words\DocumentResourceResponse.cs" />
+    <Compile Include="Words\DocumentResponse.cs" />
+    <Compile Include="Words\DocumentTextItemsResponse.cs" />
+    <Compile Include="Words\DocumentTextResponse.cs" />
+    <Compile Include="Words\Extractor.cs" />
+    <Compile Include="Words\LinkResponse.cs" />
+    <Compile Include="Words\Paragraph.cs" />
+    <Compile Include="Words\SaveFormat.cs" />
+    <Compile Include="Words\Validator.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

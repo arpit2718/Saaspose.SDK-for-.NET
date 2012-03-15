@@ -1,0 +1,8 @@
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\bin\Debug\Newtonsoft.Json.dll
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\bin\Debug\Newtonsoft.Json.pdb
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\bin\Debug\Newtonsoft.Json.xml
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
