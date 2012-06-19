@@ -273,9 +273,330 @@ namespace Saaspose.Pdf
 
         }
 
+        /// <summary>
+        /// Creates a Pdf from XML
+        /// </summary>
+        /// <param name="pdfFileName"></param>
+        /// <param name="xsltFileName"></param>
+        /// <param name="xmlFileName"></param>
+        /// <returns></returns>
+        public bool CreateFromXml(string pdfFileName, string xsltFileName, string xmlFileName)
+        {
+            try
+            {
+ 
+                string strURI = Product.BaseProductUri + "/pdf/" + pdfFileName + "?templateFile=" + xsltFileName + "&dataFile=" + xmlFileName + "&templateType=xml";
+                string signedURI = Utils.Sign(strURI);
+
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Creates a Pdf from HTML
+        /// </summary>
+        /// <param name="pdfFileName"></param>
+        /// <param name="htmlFileName"></param>
+        /// <returns></returns>
+        public bool CreateFromHtml(string pdfFileName, string htmlFileName)
+        {
+            try
+            {
+
+                string strURI = Product.BaseProductUri + "/pdf/" + pdfFileName + "?templateFile=" + htmlFileName + "&templateType=html";
+                string signedURI = Utils.Sign(strURI);
+
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Creates an Empty Pdf document
+        /// </summary>
+        /// <param name="newDocumentName"></param>
+        /// <returns></returns>
+
+        public  bool CreateEmptyPdf(String newDocumentName)
+        {
+
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + newDocumentName;
+                string signedURI = Utils.Sign(strURI);
 
 
 
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+
+        }
+
+        /// <summary>
+        /// Appends two Pdf documents. The newPdf is appended at the end of basePdf
+        /// </summary>
+        /// <param name="basePdf"></param>
+        /// <param name="newPdf"></param>
+        /// <returns></returns>
+
+        public bool AppendDocument(string basePdf, string newPdf)
+        {
+
+            try
+            {
+                //Saving Exisiting File name
+                String sOldFile=FileName;
+
+                //Getting Total page in PDF
+                FileName = newPdf;
+                int iPageCount = GetPageCount();
+               
+                //Setting Old File name again
+                FileName = sOldFile;
+
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + basePdf + "/appendDocument?appendFile="+newPdf+"&startPage=1&endPage="+iPageCount.ToString();
+                string signedURI = Utils.Sign(strURI);
+                
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "POST"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Appends two Pdf documents. The start and end pages number newPdf is given and it is appended at the end of basePdf
+        /// </summary>
+        /// <param name="basePdf"></param>
+        /// <param name="newPdf"></param>
+        /// <param name="startPage"></param>
+        /// <param name="endPage"></param>
+        /// <returns></returns>
+
+        public bool AppendDocument(string basePdf, string newPdf, int startPage, int endPage)
+        {
+
+            try
+            {
+ 
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + basePdf + "/appendDocument/?appendFile=" + newPdf + "&startPage=" + startPage.ToString() + "&endPage=" + endPage.ToString();
+                string signedURI = Utils.Sign(strURI);
+
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "POST"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
         
+        /// <summary>
+        /// Adds new page to opened Pdf document
+        /// </summary>
+        /// <returns></returns>
+       
+        public bool AddNewPage()
+        {
+
+            try
+            {
+ 
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/pages";
+                string signedURI = Utils.Sign(strURI);
+
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+         
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes selected page in Pdf document
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+
+        public bool DeletePage(int pageNumber)
+        {
+            try
+            {
+
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/pages/"+pageNumber.ToString();
+                string signedURI = Utils.Sign(strURI);
+
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "DELETE"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Moves selected page in Pdf document to new location
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="newLocation"></param>
+        /// <returns></returns>
+        public bool MovePage(int pageNumber, int newLocation)
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/pages/" + pageNumber.ToString() + "/movePage?newIndex=" + newLocation.ToString();
+                string signedURI = Utils.Sign(strURI);
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "POST"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

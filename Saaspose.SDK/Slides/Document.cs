@@ -6,6 +6,9 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Saaspose.SDK.Slides;
+using System.Xml.Serialization;
+using System.Xml;
 
 
 namespace Saaspose.Slides
@@ -360,6 +363,39 @@ namespace Saaspose.Slides
                 return true;
             else
                 return false;
+        }
+        /// <summary>
+        /// Adds one or more new custom properties
+        /// </summary>
+        /// <param name="CustomPropertyList"></param>
+        /// <returns></returns>
+        public void AddCustomProperty(CustomPropertyList list)
+        {
+
+            //build URI to get shapes
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/DocumentProperties";///" + slideNumber + "/theme/color-scheme";
+            string signedURI = Utils.Sign(strURI);
+
+            string strContent = ToXml(list);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strContent, "xml");
+        }
+        private string ToXml(object obj)
+        {
+            var nsSerializer = new XmlSerializerNamespaces();
+            nsSerializer.Add("", "");
+
+            string retval = null;
+            if (obj != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                using (XmlWriter writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true }))
+                {
+                    new XmlSerializer(obj.GetType()).Serialize(writer, obj, nsSerializer);
+                }
+                retval = sb.ToString();
+            }
+            return retval;
         }
 
     }

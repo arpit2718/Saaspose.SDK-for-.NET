@@ -6,6 +6,7 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Saaspose.SDK.Words;
 
 namespace Saaspose.Words
 {
@@ -254,5 +255,69 @@ namespace Saaspose.Words
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Append a list of documents to this one.
+        /// </summary>
+        /// <param name="outputFileName"></param>
+        /// <param name="outputFormat"></param>
+        public Boolean AppendDocument(string[] appendDocs, string[] importFormatModes, string folder)
+        {
+
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+
+            //check whether required information is complete
+            if (appendDocs.Length != importFormatModes.Length)
+                throw new Exception("Please specify complete documents and import format modes");
+
+            try
+            {
+                //Create DocumentEntryList object
+                DocumentEntryList list = new DocumentEntryList();
+                list.DocumentEntries = new List<DocumentEntry>();
+                for (int i = 0; i < appendDocs.Length; i++)
+                {
+                    string appendDoc = appendDocs[i];
+                    string docServerPath = Path.Combine(folder, appendDoc);
+                    list.DocumentEntries.Add(new DocumentEntry(docServerPath, importFormatModes[i]));
+                }
+
+                //Extract File Name
+                string inputFileName = System.IO.Path.GetFileName(FileName);
+
+                //build URI
+                Uri uri = new Uri(Product.BaseProductUri + "/words/" + inputFileName + "/appendDocument");
+                UriBuilder builder = new UriBuilder(uri);
+                if (!string.IsNullOrEmpty(folder))
+                    builder.Query = string.Format("folder={0}", folder);
+
+                //sign URI
+                string signedURI = Utils.Sign(builder.Uri.AbsoluteUri);
+                string strJSON = JsonConvert.SerializeObject(list);
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "POST", strJSON));
+
+                //further process JSON response
+                string ResJSONStr = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(ResJSONStr);
+
+                //Deserializes the JSON to a object. 
+                BaseResponse docResponse = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (docResponse.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
     }
 }

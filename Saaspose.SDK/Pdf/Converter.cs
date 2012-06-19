@@ -14,6 +14,11 @@ namespace Saaspose.Pdf
     /// </summary>
     public class Converter
     {
+        public Converter()
+        {
+            
+        }
+        
         public Converter(string fileName)
         {
             FileName = fileName;
@@ -43,7 +48,7 @@ namespace Saaspose.Pdf
 
             using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
             {
-                CopyStream(responseStream, fileStream);
+                Utils.CopyStream(responseStream, fileStream);
             }
             responseStream.Close();
  
@@ -67,7 +72,7 @@ namespace Saaspose.Pdf
 
             using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
             {
-                CopyStream(responseStream, fileStream);
+                Utils.CopyStream(responseStream, fileStream);
             }
             responseStream.Close();
 
@@ -92,7 +97,7 @@ namespace Saaspose.Pdf
 
             using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
             {
-                CopyStream(responseStream, fileStream);
+                Utils.CopyStream(responseStream, fileStream);
             }
             responseStream.Close();
  
@@ -100,23 +105,65 @@ namespace Saaspose.Pdf
         }
 
         /// <summary>
-        /// Copies the contents of input to output. Doesn't close either stream.
+        /// Convert PDF to different file format without using storage
         /// </summary>
-        private static void CopyStream(Stream input, Stream output)
+        /// <param name="outputFileName"></param>
+        /// <param name="outputFormat"></param>
+        public void ConvertLocalFile(string inputPath, string outputPath, SaveFormat outputFormat)
         {
             try
             {
-                byte[] buffer = new byte[8 * 1024];
-                int len;
-                while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
+
+                //build URI
+                string strURI = Saaspose.Common.Product.BaseProductUri + "/pdf/convert?format=" + outputFormat;
+
+                //sign URI
+                string signedURI = Utils.Sign(strURI);
+
+                FileStream stream = new FileStream(inputPath, FileMode.Open);
+
+                //get response stream
+                Stream responseStream = Utils.ProcessCommand(signedURI, "PUT", stream);
+
+                using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
                 {
-                    output.Write(buffer, 0, len);
+                    Utils.CopyStream(responseStream, fileStream);
                 }
+                responseStream.Close();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+
+        }
+
+        /// <summary>
+        /// Convert Pdf to different file format without using storage
+        /// </summary>
+        /// <param name="outputFileName"></param>
+        /// <param name="outputFormat"></param>
+        public Stream ConvertLocalFile(Stream inputStream, SaveFormat outputFormat)
+        {
+            try
+            {
+                //build URI
+                string strURI = Saaspose.Common.Product.BaseProductUri + "/pdf/convert?format=" + outputFormat;
+
+                //sign URI
+                string signedURI = Utils.Sign(strURI);
+
+                Stream fileStream = new MemoryStream();
+
+                Utils.CopyStream(Utils.ProcessCommand(signedURI, "PUT", inputStream), fileStream);
+
+                return fileStream;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
 
     }

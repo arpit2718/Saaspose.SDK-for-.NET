@@ -6,3 +6,30 @@ D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\bin\Debug\Newtonsoft.Json.xml
 D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
 D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
 D:\Work\Saaspose\SDKs\DotNetSdk\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\bin\Debug\Newtonsoft.Json.pdb
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\bin\Debug\Newtonsoft.Json.xml
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+E:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+I:\SDK\Saaspose SDK\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+I:\SDK\Saaspose SDK\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+I:\SDK\Saaspose SDK\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+I:\SDK\Saaspose SDK\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+I:\SDK\Saaspose SDK\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+D:\Saaspose SDK\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+D:\Saaspose SDK\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+D:\Saaspose SDK\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+D:\Saaspose SDK\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+D:\Saaspose SDK\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+D:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+D:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+D:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+D:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+D:\AP Data\Saaspose\HQ Rep\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb

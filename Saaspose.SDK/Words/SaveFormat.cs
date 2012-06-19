@@ -32,7 +32,22 @@ namespace Saaspose.Words
         epub,
         xps,
         swf,
-        tiff
+        tiff,
+        svg,
+        jpeg,
+        bmp,
+        png
+    }
+
+    /// <summary>
+    /// Represents supported extract drawing object
+    /// </summary>
+    public enum DrawingObjectsRenderFormat
+    {
+        jpeg,
+        tiff,
+        png,
+        bmp
     }
 }
 

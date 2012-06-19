@@ -32,6 +32,10 @@ namespace Saaspose.Cells
 
         public ValidationsResponse Validations { get; set; }
 
+        public RowsResponse Rows { get; set; }
+
+        public ColumnsResponse Columns { get; set; }
+
         public Worksheet Worksheet { get; set; }
 
     }

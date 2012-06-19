@@ -13,6 +13,13 @@ namespace Saaspose.Words
     /// </summary>
     public class Converter
     {
+        /// <summary>
+        /// Converter Class Constructor
+        /// </summary>
+        public Converter()
+        {
+
+        }
         public Converter(string fileName)
         {
 
@@ -101,6 +108,69 @@ namespace Saaspose.Words
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Convert Documentl to different file format without using storage
+        /// </summary>
+        /// <param name="outputFileName"></param>
+        /// <param name="outputFormat"></param>
+        public void ConvertLocalFile(string inputPath, string outputPath, SaveFormat outputFormat)
+        {
+            try
+            {
+
+                //build URI
+                string strURI = Saaspose.Common.Product.BaseProductUri + "/words/convert?format=" + outputFormat;
+
+                //sign URI
+                string signedURI = Utils.Sign(strURI);
+
+                FileStream stream = new FileStream(inputPath, FileMode.Open);
+
+                //get response stream
+                Stream responseStream = Utils.ProcessCommand(signedURI, "PUT", stream);
+
+                using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
+                {
+                    Utils.CopyStream(responseStream, fileStream);
+                }
+                responseStream.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Convert Document to different file format without using storage
+        /// </summary>
+        /// <param name="outputFileName"></param>
+        /// <param name="outputFormat"></param>
+        public Stream ConvertLocalFile(Stream inputStream, SaveFormat outputFormat)
+        {
+            try
+            {
+                //build URI
+                string strURI = Saaspose.Common.Product.BaseProductUri + "/words/convert?format=" + outputFormat;
+
+                //sign URI
+                string signedURI = Utils.Sign(strURI);
+
+                Stream fileStream = new MemoryStream();
+
+                Utils.CopyStream(Utils.ProcessCommand(signedURI, "PUT", inputStream), fileStream);
+
+                return fileStream;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
 
  
     }

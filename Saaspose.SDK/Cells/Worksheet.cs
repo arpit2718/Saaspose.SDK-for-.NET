@@ -26,44 +26,7 @@ namespace Saaspose.Cells
         /// <summary>
         /// 
         /// </summary>
-        public LinkResponse Link { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="outputFileName"></param>
-        /// <param name="outputFormat"></param>
-        /// <param name="saveLocation"></param>
-
-        public void SaveAsImage(string outputFileName, ImageFormat outputFormat, SaveLocation saveLocation)
-        {
-            try
-            {
-                //check whether file is set or not
-                if (FileName == "")
-                    throw new Exception("No file name specified");
-
-                //build URI
-                string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-                strURI += "/worksheets/" + WorkSheetName + "?format=" + outputFormat;
-
-                //sign URI
-                string signedURI = Utils.Sign(strURI);
-
-                //get response stream
-                Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-                using (Stream fileStream = System.IO.File.OpenWrite(outputFileName))
-                {
-                    CopyStream(responseStream, fileStream);
-                }
-                responseStream.Close();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        public LinkResponse Link { get; set; }     
 
         /// <summary>
         /// 
@@ -96,6 +59,60 @@ namespace Saaspose.Cells
             WorksheetResponse worksheetResponse = JsonConvert.DeserializeObject<WorksheetResponse>(parsedJSON.ToString());
 
             return worksheetResponse.Cells.CellList;
+        }
+
+        public List<LinkResponse> GetRowsList(int offset, int count)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+
+            //build URI
+            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+            strURI += "/worksheets/" + WorkSheetName + "/rows?offset=" + offset + "&count=" + count;
+
+            //sign URI
+            string signedURI = Utils.Sign(strURI);
+
+            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
+
+            //further process JSON response
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            WorksheetResponse worksheetResponse = JsonConvert.DeserializeObject<WorksheetResponse>(parsedJSON.ToString());
+
+            return worksheetResponse.Cells.CellList;
+        }
+
+        public List<LinkResponse> GetColumnsList(int offset, int count)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+
+            //build URI
+            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+            strURI += "/worksheets/" + WorkSheetName + "/columns?offset=" + offset + "&count=" + count;
+
+            //sign URI
+            string signedURI = Utils.Sign(strURI);
+
+            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
+
+            //further process JSON response
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            WorksheetResponse worksheetResponse = JsonConvert.DeserializeObject<WorksheetResponse>(parsedJSON.ToString());
+
+            return worksheetResponse.Columns.ColumnsList;
         }
 
         /// <summary>
@@ -259,35 +276,7 @@ namespace Saaspose.Cells
 
             return autoShapesResponse.AutoShape;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="outputFileName"></param>
-        /// <param name="outputformat"></param>
-        public void ConvertAutoShape(int index, string outputFileName, ImageFormat outputformat)
-        {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
-
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/autoshapes/" + index + "?format=" + outputformat;
-
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
-
-            //get response stream
-            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-            using (Stream fileStream = System.IO.File.OpenWrite(outputFileName))
-            {
-                CopyStream(responseStream, fileStream);
-            }
-            responseStream.Close();
-        }
+       
 
         /// <summary>
         /// 
@@ -353,6 +342,42 @@ namespace Saaspose.Cells
             return cellsResponse.Style;
         }
 
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="cellName"></param>
+       /// <param name="style"></param>
+       /// <returns></returns>
+        public Style SetCellStyle(string cellName, Style style)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+
+            //build URI
+            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+            strURI += "/worksheets/" + WorkSheetName + "/cells/" + cellName + "/style";
+
+            string strJSON = JsonConvert.SerializeObject(style);
+
+            //sign URI
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
+
+            StreamReader reader = new StreamReader(responseStream);
+
+            //further process JSON response
+            string strResponse = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strResponse);
+
+            //Deserializes the JSON to a object. 
+            CellsResponse cellsResponse = JsonConvert.DeserializeObject<CellsResponse>(parsedJSON.ToString());
+
+            return cellsResponse.Style;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -453,35 +478,6 @@ namespace Saaspose.Cells
         /// 
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="outputFileName"></param>
-        /// <param name="outputformat"></param>
-        public void ConvertChart(int index, string outputFileName, ImageFormat outputformat)
-        {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
-
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/charts/" + index + "?format=" + outputformat;
-
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
-
-            //get response stream
-            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-            using (Stream fileStream = System.IO.File.OpenWrite(outputFileName))
-            {
-                CopyStream(responseStream, fileStream);
-            }
-            responseStream.Close();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
         /// <returns></returns>
         public OleObject GetOleObjectByIndex(int index)
         {
@@ -508,35 +504,6 @@ namespace Saaspose.Cells
             OleObjectsResponse oleObjectsResponse = JsonConvert.DeserializeObject<OleObjectsResponse>(parsedJSON.ToString());
 
             return oleObjectsResponse.OleObject;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="outputFileName"></param>
-        /// <param name="outputformat"></param>
-        public void ConvertOleObject(int index, string outputFileName, ImageFormat outputformat)
-        {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
-
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/oleobjects/" + index + "?format=" + outputformat;
-
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
-
-            //get response stream
-            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-            using (Stream fileStream = System.IO.File.OpenWrite(outputFileName))
-            {
-                CopyStream(responseStream, fileStream);
-            }
-            responseStream.Close();
         }
 
         /// <summary>
@@ -570,36 +537,7 @@ namespace Saaspose.Cells
 
             return picturesResponse.Picture;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="outputFileName"></param>
-        /// <param name="outputformat"></param>
-        public void ConvertPicture(int index, string outputFileName, ImageFormat outputformat)
-        {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
-
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/pictures/" + index + "?format=" + outputformat;
-
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
-
-            //get response stream
-            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-            using (Stream fileStream = System.IO.File.OpenWrite(outputFileName))
-            {
-                CopyStream(responseStream, fileStream);
-            }
-            responseStream.Close();
-        }
-
+       
         /// <summary>
         /// 
         /// </summary>
@@ -1019,50 +957,43 @@ namespace Saaspose.Cells
 
             return formulaResponse.Value;
         }
+ 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public List<TextItem> FindText(string text)
+        public void SetCellValue(string cellName, string valueType, string value)
         {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/cells/" + FileName;
+                strURI += "/worksheets/" + WorkSheetName + "/cells/" +cellName +"?value="+value+"&type="+valueType;
 
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/findText?text=" + text;
 
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
+                string signedURI = Utils.Sign(strURI);               
 
-            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "POST"));
+                Stream responseStream = Utils.ProcessCommand(signedURI, "POST");
 
-            //further process JSON response
-            string strJSON = reader.ReadToEnd();
+                StreamReader reader = new StreamReader(responseStream);
+                string strResponse = reader.ReadToEnd();
 
-            //Parse the json string to JObject
-            JObject parsedJSON = JObject.Parse(strJSON);
+                //Parse the json string to JObject
+                JObject pJSON = JObject.Parse(strResponse);
 
-            //Create list of worksheets
-            List<Saaspose.Cells.TextItem> textItems = new List<Saaspose.Cells.TextItem>();
+                BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(pJSON.ToString());
 
-            //Deserializes the JSON to a object. 
-            WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
-
-            textItems = docResponse.TextItems.TextItemList;
-
-            //return worksheets
-            return textItems;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        
         }
-
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
         /// <returns></returns>
-        public List<TextItem> GetTextItems()
+        public int GetRowsCount(int offset, int count)
         {
             //check whether file is set or not
             if (FileName == "")
@@ -1070,7 +1001,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/" + WorkSheetName + "/textItems";
+            strURI += "/worksheets/" + WorkSheetName + "/rows?offset=" + offset + "&count=" + count;
 
             //sign URI
             string signedURI = Utils.Sign(strURI);
@@ -1083,38 +1014,127 @@ namespace Saaspose.Cells
             //Parse the json string to JObject
             JObject parsedJSON = JObject.Parse(strJSON);
 
-            //Create list of worksheets
-            List<Saaspose.Cells.TextItem> textItems = new List<Saaspose.Cells.TextItem>();
-
             //Deserializes the JSON to a object. 
-            WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
+            WorksheetResponse worksheetResponse = JsonConvert.DeserializeObject<WorksheetResponse>(parsedJSON.ToString());
 
-            textItems = docResponse.TextItems.TextItemList;
-
-            //return worksheets
-            return textItems;
+            return worksheetResponse.Rows.RowCount;
         }
 
-        /// <summary>
-        /// Copies the contents of input to output. Doesn't close either stream.
-        /// </summary>
-        private static void CopyStream(Stream input, Stream output)
+        public Row GetRow(int rowIndex)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+
+            //build URI
+            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+            strURI += "/worksheets/" + WorkSheetName + "/rows/" + rowIndex;
+
+            //sign URI
+            string signedURI = Utils.Sign(strURI);
+
+            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
+
+            //further process JSON response
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            RowsResponse rowsResponse = JsonConvert.DeserializeObject<RowsResponse>(parsedJSON.ToString());
+
+            return rowsResponse.Row;
+        }
+
+        public bool DeleteRow(int rowIndex)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+
+            //build URI
+            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+            strURI += "/worksheets/" + WorkSheetName + "/rows/" + rowIndex;
+
+            //sign URI
+            string signedURI = Utils.Sign(strURI);
+
+            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "DELETE"));
+
+            //further process JSON response
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            BaseResponse docResponse = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+            if (docResponse.Status == "OK")
+                return true;
+            else
+                return false;
+        }
+
+        public bool SortData(DataSort dataSort, string cellArea)
         {
             try
             {
-                byte[] buffer = new byte[8 * 1024];
-                int len;
-                while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    output.Write(buffer, 0, len);
-                }
+                //build URI
+                string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+                strURI += "/worksheets/" + WorkSheetName + "/sort?" + cellArea;
+
+                string signedURI = Utils.Sign(strURI);
+                
+                string strJSON = JsonConvert.SerializeObject(dataSort);
+
+                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
+
+                StreamReader reader = new StreamReader(responseStream);
+                string strResponse = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject pJSON = JObject.Parse(strResponse);
+
+                BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(pJSON.ToString());
+
+                if (baseResponse.Status == "OK")
+                    return true;
+                else
+                    return false;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+        public Column GetColumn(int columnIndex)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
 
+            //build URI
+            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+            strURI += "/worksheets/" + WorkSheetName + "/columns/" + columnIndex;
+
+            //sign URI
+            string signedURI = Utils.Sign(strURI);
+
+            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
+
+            //further process JSON response
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            ColumnsResponse columnsResponse = JsonConvert.DeserializeObject<ColumnsResponse>(parsedJSON.ToString());
+
+            return columnsResponse.Column;
+        }
         /// <summary>
         /// 
         /// </summary>

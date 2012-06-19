@@ -13,6 +13,8 @@ namespace Saaspose.Pdf
         TIFF, 
         PDF, 
         XPS, 
-        DOC
+        DOC,
+        HTML,
+        TeX
     }
 }

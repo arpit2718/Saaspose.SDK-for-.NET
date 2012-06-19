@@ -120,6 +120,78 @@ namespace Saaspose.Common
             }
         }
 
+        public static Stream ProcessCommand(string strURI, string strHttpCommand, Stream streamContent)
+        {
+            try
+            {
+               
+                Uri address = new Uri(strURI);
+
+                System.Net.HttpWebRequest request = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(address);
+                
+                request.Method = strHttpCommand;
+                
+                request.ContentType = "application/x-www-form-urlencoded";
+
+                request.ContentLength = streamContent.Length;
+
+                Stream reqStream = request.GetRequestStream();
+
+                byte[] inData = new byte[streamContent.Length];
+
+                int bytesRead = streamContent.Read(inData, 0, (int)streamContent.Length);
+
+                reqStream.Write(inData, 0, (int)streamContent.Length);
+                
+                streamContent.Close();
+
+                System.Net.HttpWebResponse response = (System.Net.HttpWebResponse)request.GetResponse();
+               
+                reqStream.Close();  
+
+                return response.GetResponseStream();
+            }
+            catch (System.Net.WebException webex)
+            {
+                throw new Exception(webex.Message);
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message);
+            }
+        }
+        public static Stream ProcessCommand(string strURI, string strHttpCommand, string strContent, string ContentType = "xml")
+        {
+            try
+            {
+                byte[] arr = System.Text.Encoding.UTF8.GetBytes(strContent);
+
+                Uri address = new Uri(strURI);
+                System.Net.HttpWebRequest request = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(address);
+                request.Method = strHttpCommand;
+                if (ContentType.ToLower() == "xml")
+                    request.ContentType = "application/xml";
+                else
+                    request.ContentType = "application/json";
+
+                request.ContentLength = arr.Length;
+
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(arr, 0, arr.Length);
+                dataStream.Close();
+
+                System.Net.HttpWebResponse response = (System.Net.HttpWebResponse)request.GetResponse();
+                return response.GetResponseStream();
+            }
+            catch (System.Net.WebException webex)
+            {
+                throw new Exception(webex.Message);
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message);
+            }
+        }
         /// <summary>
         /// This method can be used to upload binary files to the remote URI using
         /// Http PUT or POST commands

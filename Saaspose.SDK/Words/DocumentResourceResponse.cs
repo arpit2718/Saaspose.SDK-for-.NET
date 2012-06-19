@@ -9,6 +9,6 @@ namespace Saaspose.Words
         /// <summary>
         /// Document
         /// </summary>
-        public Document Document { get; set; }
+        public DocumentInfo Document { get; set; }
     }
 }

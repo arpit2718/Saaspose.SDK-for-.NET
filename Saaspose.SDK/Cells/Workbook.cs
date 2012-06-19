@@ -216,6 +216,119 @@ namespace Saaspose.Cells
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newWorkbookName"></param>
+        public void CreateEmptyWorkbook()
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/cells/" + FileName;
+                string signedURI = Utils.Sign(strURI);
+            
+
+                Stream responseStream = Utils.ProcessCommand(signedURI, "PUT");
+
+                StreamReader reader = new StreamReader(responseStream);
+                string strResponse = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject pJSON = JObject.Parse(strResponse);
+
+                WorkbookResponse baseResponse = JsonConvert.DeserializeObject<WorkbookResponse>(pJSON.ToString());
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public void CreateWorkbookFromTemplate(string templateFileName)
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/cells/" + FileName + "?templatefile=" + templateFileName;
+                string signedURI = Utils.Sign(strURI);
+
+                Stream responseStream = Utils.ProcessCommand(signedURI, "PUT");
+
+                StreamReader reader = new StreamReader(responseStream);
+                string strResponse = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject pJSON = JObject.Parse(strResponse);
+
+                WorkbookResponse baseResponse = JsonConvert.DeserializeObject<WorkbookResponse>(pJSON.ToString());
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newWorkbookName"></param>
+        /// <param name="templateFileName"></param>
+        /// <param name="dataFile"></param>
+        public void CreateWorkbookFromSmartMarkerTemplate(string templateFileName, string dataFile)
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/cells/" + FileName + "?templatefile=" + templateFileName + "&dataFile=" + dataFile;
+                string signedURI = Utils.Sign(strURI);
+
+                Stream responseStream = Utils.ProcessCommand(signedURI, "PUT");
+
+                StreamReader reader = new StreamReader(responseStream);
+                string strResponse = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject pJSON = JObject.Parse(strResponse);
+
+                WorkbookResponse baseResponse = JsonConvert.DeserializeObject<WorkbookResponse>(pJSON.ToString());
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void ProcessSmartMarker(string dataFile)
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/cells/" + FileName + "/smartmarker?xmlFile=" + dataFile;
+                string signedURI = Utils.Sign(strURI);
+
+                Stream responseStream = Utils.ProcessCommand(signedURI, "POST");
+
+                StreamReader reader = new StreamReader(responseStream);
+                string strResponse = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject pJSON = JObject.Parse(strResponse);
+
+                WorkbookResponse baseResponse = JsonConvert.DeserializeObject<WorkbookResponse>(pJSON.ToString());
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public int GetWorksheetsCount()
         {
             //check whether file is set or not
@@ -386,7 +499,7 @@ namespace Saaspose.Cells
 
                 string strJSON = JsonConvert.SerializeObject(protection);
 
-                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
+                Stream responseStream = Utils.ProcessCommand(signedURI, "DELETE", strJSON);
 
                 StreamReader reader = new StreamReader(responseStream);
                 string strResponse = reader.ReadToEnd();
@@ -579,40 +692,7 @@ namespace Saaspose.Cells
                 return true;
             else
                 return false;
-        }
-
-        public List<TextItem> FindText(string text)
-        {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
-
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/findText?text=" + text;
-
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
-
-            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "POST"));
-
-            //further process JSON response
-            string strJSON = reader.ReadToEnd();
-
-            //Parse the json string to JObject
-            JObject parsedJSON = JObject.Parse(strJSON);
-
-            //Create list of worksheets
-            List<Saaspose.Cells.TextItem> textItems = new List<Saaspose.Cells.TextItem>();
-
-            //Deserializes the JSON to a object. 
-            WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
-
-            textItems = docResponse.TextItems.TextItemList;
-
-            //return worksheets
-            return textItems;
-        }
+        }      
 
         public void MergeWorkbook(string mergefileName)
         {
@@ -647,90 +727,7 @@ namespace Saaspose.Cells
             {
                 throw new Exception(ex.Message);
             }
-        }
-
-        public void Save(string outputFileName, SaveFormat outputFormat, SaveLocation saveLocation)
-        {
-            try
-            {
-                //check whether file is set or not
-                if (FileName == "")
-                    throw new Exception("No file name specified");
-
-                //build URI
-                string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-                strURI += "?format=" + outputFormat;
-
-                //sign URI
-                string signedURI = Utils.Sign(strURI);
-
-                //get response stream
-                Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
-              
-                using (Stream fileStream = System.IO.File.OpenWrite(outputFileName))
-                {
-                    CopyStream(responseStream, fileStream);
-                }
-                responseStream.Close();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        
-        }
-        public List<TextItem> GetTextItems()
-        {
-            //check whether file is set or not
-            if (FileName == "")
-                throw new Exception("No file name specified");
-
-            //build URI
-            string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/textItems";
-
-            //sign URI
-            string signedURI = Utils.Sign(strURI);
-
-            StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
-
-            //further process JSON response
-            string strJSON = reader.ReadToEnd();
-
-            //Parse the json string to JObject
-            JObject parsedJSON = JObject.Parse(strJSON);
-
-            //Create list of worksheets
-            List<Saaspose.Cells.TextItem> textItems = new List<Saaspose.Cells.TextItem>();
-
-            //Deserializes the JSON to a object. 
-            WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
-
-            textItems = docResponse.TextItems.TextItemList;
-
-            //return worksheets
-            return textItems;
-        }
-
-        /// <summary>
-        /// Copies the contents of input to output. Doesn't close either stream.
-        /// </summary>
-        private static void CopyStream(Stream input, Stream output)
-        {
-            try
-            {
-                byte[] buffer = new byte[8 * 1024];
-                int len;
-                while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    output.Write(buffer, 0, len);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        }      
 
         /// <summary>
         /// Workbook name

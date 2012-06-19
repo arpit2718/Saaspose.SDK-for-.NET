@@ -17,6 +17,7 @@ namespace Saaspose.Cells
        
         public LinkResponse link { get; set; }
         public string Name { get; set; }
+        public string Type { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
         public string Value { get; set; }
