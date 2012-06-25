@@ -131,7 +131,7 @@ namespace Saaspose.Common
                 
                 request.Method = strHttpCommand;
                 
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = "application/json";
 
                 request.ContentLength = streamContent.Length;
 

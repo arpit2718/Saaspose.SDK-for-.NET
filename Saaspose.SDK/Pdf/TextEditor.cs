@@ -293,7 +293,46 @@ namespace Saaspose.Pdf
             return textformatResponse.TextFormat;
         }
 
+        /*
+        FEATURE NOT AVAILABLE AT THE MOMENT
+        /// <summary>
+        /// Replace Text in PDF Document
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="propertyValue"></param>
+        /// <returns></returns>
+        public bool ReplaceText(string oldText, string newText)
+        {
 
+            //build URI to get page count
+            string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/replaceText";
+            string signedURI = Utils.Sign(strURI);
+
+            //serialize the JSON request content
+            TextReplace replaceText = new TextReplace();
+            replaceText.oldValue = oldText;
+            replaceText.newValue = newText;
+
+            string strJSON = JsonConvert.SerializeObject(replaceText);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strResponse = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject pJSON = JObject.Parse(strResponse);
+
+            ReplaceTextResponse baseResponse = JsonConvert.DeserializeObject<ReplaceTextResponse>(pJSON.ToString());
+
+            if (baseResponse.Code == "200" && baseResponse.Status == "OK")
+                return true;
+            else
+                return false;
+
+
+        }
+        */
 
     }
 }

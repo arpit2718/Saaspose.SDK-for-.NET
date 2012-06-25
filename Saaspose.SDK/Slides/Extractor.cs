@@ -6,6 +6,8 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Saaspose.SDK.Slides;
+using Saaspose.SDK.Slides.ResponseHandlers;
 
 
 namespace Saaspose.Slides
@@ -133,5 +135,126 @@ namespace Saaspose.Slides
 
             return parsedJSON;
         }
+        /// <summary>
+        /// Get color scheme from the specified slide
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <returns></returns>
+        public ColorScheme GetColorScheme(int slideNumber)
+        {
+            //build URI to get color scheme
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber + "/theme/colorScheme";
+
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            ColorSchemeResponse colorSchemeResponse = JsonConvert.DeserializeObject<ColorSchemeResponse>(parsedJSON.ToString());
+            return colorSchemeResponse.ColorScheme;
+        }
+        /// <summary>
+        /// Get font scheme from the specified slide
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <returns></returns>
+        public FontScheme GetFontScheme(int slideNumber)
+        {
+            //build URI to get font scheme
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber + "/theme/fontScheme";
+
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            FontSchemeResponse fontSchemeResponse = JsonConvert.DeserializeObject<FontSchemeResponse>(parsedJSON.ToString());
+            return fontSchemeResponse.FontScheme;
+        }
+        /// <summary>
+        /// Get format scheme from the specified slide
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <returns></returns>
+        public void GetFormatScheme(int slideNumber)
+        {
+            //build URI to get format scheme
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber + "/theme/formatScheme";
+
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            FormatSchemeResponse formatSchemeResponse = JsonConvert.DeserializeObject<FormatSchemeResponse>(parsedJSON.ToString());
+            FormatScheme formatscheme = formatSchemeResponse.FormatScheme;
+        }
+
+        /// <summary>
+        /// Get placeholder count from a particular slide
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <returns></returns>
+        public int GetPlaceholderCount(int slideNumber)
+        {
+            //build URI to get placeholder count
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber.ToString() + "/placeholders";
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            PlaceholdersResponse PlaceholderResponse = JsonConvert.DeserializeObject<PlaceholdersResponse>(parsedJSON.ToString());
+            return PlaceholderResponse.Placeholders.PlaceholderLinks.Count;
+        }
+        /// <summary>
+        /// Get placeholder from a particular slide
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="PlaceholderIndex"></param>
+        /// <returns></returns>
+        public Placeholder GetPlaceholder(int slideNumber, int PlaceholderIndex)
+        {
+            //build URI to get placeholder
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber.ToString() + "/placeholders/" + PlaceholderIndex;
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            PlaceholderResponse PlaceholderResponse = JsonConvert.DeserializeObject<PlaceholderResponse>(parsedJSON.ToString());
+            return PlaceholderResponse.Placeholder;
+        }
+
     }
 }

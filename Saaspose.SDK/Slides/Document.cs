@@ -397,6 +397,28 @@ namespace Saaspose.Slides
             }
             return retval;
         }
+        public bool DeleteAllSlides()
+        {
+            //build URI to remove all the slides
+            string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides";
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "DELETE");
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+            if (baseResponse.Code == "200" && baseResponse.Status == "OK")
+                return true;
+            else
+                return false;
+
+        }
 
     }
 }

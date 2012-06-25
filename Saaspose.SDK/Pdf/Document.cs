@@ -598,5 +598,81 @@ namespace Saaspose.Pdf
             }
         }
 
+        /// <summary>
+        /// Replace Image in PDF File using Local Image Stream
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="newLocation"></param>
+        /// <returns></returns>
+        public bool ReplaceImageUsingStream(int pageNumber, int imageIndex, Stream imageStream)
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/pages/" + pageNumber.ToString() + "/images/" + imageIndex.ToString();
+               
+                string signedURI = Utils.Sign(strURI);
+                
+                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", imageStream);
+
+                StreamReader reader = new StreamReader(responseStream);
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Replace Image in PDF document using Image File uploaded on Server
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="newLocation"></param>
+        /// <returns></returns>
+        public bool ReplaceImageUsingFile(int pageNumber, int imageIndex, string fileName)
+        {
+            try
+            {
+                //build URI to get page count
+                string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/pages/" + pageNumber.ToString() + "/images/" + imageIndex.ToString() + "?imageFile=" + fileName;
+
+                string signedURI = Utils.Sign(strURI);
+
+                Stream responseStream = Utils.ProcessCommand(signedURI, "POST");
+
+                StreamReader reader = new StreamReader(responseStream);
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

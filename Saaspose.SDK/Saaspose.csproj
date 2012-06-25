@@ -139,6 +139,10 @@
     <Compile Include="Pdf\Attachment.cs" />
     <Compile Include="Pdf\Bookmark.cs" />
     <Compile Include="Pdf\Color.cs" />
+    <Compile Include="Pdf\ResponseHandlers\ReplaceTextResponse.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pdf\TextReplace.cs" />
     <Compile Include="Pdf\Enums\LinkActionType.cs" />
     <Compile Include="Pdf\Enums\LinkHighlightingMode.cs" />
     <Compile Include="Pdf\Link.cs" />
@@ -185,21 +189,35 @@
     <Compile Include="Pdf\ResponseHandlers\PagesEnvelop.cs" />
     <Compile Include="Pdf\ResponseHandlers\PagesResponse.cs" />
     <Compile Include="Pdf\TextEditor.cs" />
+    <Compile Include="Slides\ColorScheme.cs" />
     <Compile Include="Slides\CustomPropertyList.cs" />
     <Compile Include="Slides\Document.cs" />
     <Compile Include="Slides\DocumentProperty.cs" />
     <Compile Include="Slides\Enums\ImageFormat.cs" />
+    <Compile Include="Slides\Enums\Orientation.cs" />
     <Compile Include="Slides\Enums\SaveFormat.cs" />
+    <Compile Include="Slides\Enums\Size.cs" />
+    <Compile Include="Slides\Enums\Type.cs" />
     <Compile Include="Slides\Extractor.cs" />
+    <Compile Include="Slides\FontScheme.cs" />
+    <Compile Include="Slides\FormatScheme.cs" />
+    <Compile Include="Slides\Placeholder.cs" />
+    <Compile Include="Slides\ResponseHandlers\ColorSchemeResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\DocumentPropertiesEnvelop.cs" />
     <Compile Include="Slides\ResponseHandlers\DocumentPropertiesResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\DocumentPropertyResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\FillFormatURI.cs" />
+    <Compile Include="Slides\ResponseHandlers\FontSchemeResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\FormatSchemeResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\ImageResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\ImagesEnvelop.cs" />
     <Compile Include="Slides\ResponseHandlers\ImagesResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\LineFormatURI.cs" />
     <Compile Include="Slides\ResponseHandlers\LinkResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\PlaceholderResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\PlaceholdersEnvelop.cs" />
+    <Compile Include="Slides\ResponseHandlers\PlaceholdersResponse.cs" />
+    <Compile Include="Slides\ResponseHandlers\PlaceholderURI.cs" />
     <Compile Include="Slides\ResponseHandlers\ShapeResponse.cs" />
     <Compile Include="Slides\ResponseHandlers\ShapesEnvelop.cs" />
     <Compile Include="Slides\ResponseHandlers\ShapesResponse.cs" />
