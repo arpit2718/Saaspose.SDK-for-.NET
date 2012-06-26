@@ -11,8 +11,9 @@ namespace Saaspose.Pdf
     {
         public TextReplace() { }
 
-        public string oldValue { get; set; }
-        public string newValue { get; set; }
+        public string OldValue { get; set; }
+        public string NewValue { get; set; }
+        public string Regex { get; set; }
 
     }
 }

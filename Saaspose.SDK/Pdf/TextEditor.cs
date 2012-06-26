@@ -293,15 +293,15 @@ namespace Saaspose.Pdf
             return textformatResponse.TextFormat;
         }
 
-        /*
-        FEATURE NOT AVAILABLE AT THE MOMENT
+        
         /// <summary>
-        /// Replace Text in PDF Document
+        /// Replace Text in a PDF Document
         /// </summary>
-        /// <param name="propertyName"></param>
-        /// <param name="propertyValue"></param>
-        /// <returns></returns>
-        public bool ReplaceText(string oldText, string newText)
+        /// <param name="oldText"></param>
+        /// <param name="newText"></param>
+        /// <param name="isRegularExpression"></param>
+        /// <returns>Number of Matches</returns>
+        public int ReplaceText(string oldText, string newText, bool isRegularExpression)
         {
 
             //build URI to get page count
@@ -310,8 +310,12 @@ namespace Saaspose.Pdf
 
             //serialize the JSON request content
             TextReplace replaceText = new TextReplace();
-            replaceText.oldValue = oldText;
-            replaceText.newValue = newText;
+            replaceText.OldValue = oldText;
+            replaceText.NewValue = newText;
+            if (isRegularExpression)
+                replaceText.Regex = "true";
+            else
+                replaceText.Regex = "false";
 
             string strJSON = JsonConvert.SerializeObject(replaceText);
 
@@ -323,16 +327,58 @@ namespace Saaspose.Pdf
             //Parse the json string to JObject
             JObject pJSON = JObject.Parse(strResponse);
 
-            ReplaceTextResponse baseResponse = JsonConvert.DeserializeObject<ReplaceTextResponse>(pJSON.ToString());
+            ReplaceTextResponse replaceTextResponse = JsonConvert.DeserializeObject<ReplaceTextResponse>(pJSON.ToString());
 
-            if (baseResponse.Code == "200" && baseResponse.Status == "OK")
-                return true;
+            if (replaceTextResponse.Code == "200" && replaceTextResponse.Status == "OK")
+                return replaceTextResponse.Matches;
             else
-                return false;
+                return 0;
 
 
         }
-        */
 
+       /// <summary>
+        /// Replace Text in Particular Page of PDF Document
+       /// </summary>
+       /// <param name="pageNumber"></param>
+       /// <param name="oldText"></param>
+       /// <param name="newText"></param>
+       /// <param name="isRegularExpression"></param>
+       /// <returns>Number of Matches</returns>
+        public int ReplaceText(int pageNumber,string oldText, string newText, bool isRegularExpression)
+        {
+
+            //build URI to get page count
+            string strURI = Product.BaseProductUri + "/pdf/" + FileName + "/pages/" + pageNumber + "/replaceText";
+            string signedURI = Utils.Sign(strURI);
+
+            //serialize the JSON request content
+            TextReplace replaceText = new TextReplace();
+            replaceText.OldValue = oldText;
+            replaceText.NewValue = newText;
+            if (isRegularExpression)
+                replaceText.Regex = "true";
+            else
+                replaceText.Regex = "false";
+
+            string strJSON = JsonConvert.SerializeObject(replaceText);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strResponse = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject pJSON = JObject.Parse(strResponse);
+
+            ReplaceTextResponse replaceTextResponse = JsonConvert.DeserializeObject<ReplaceTextResponse>(pJSON.ToString());
+
+            if (replaceTextResponse.Code == "200" && replaceTextResponse.Status == "OK")
+                return replaceTextResponse.Matches;
+            else
+                return 0;
+
+
+        }
     }
 }

@@ -598,12 +598,13 @@ namespace Saaspose.Pdf
             }
         }
 
-        /// <summary>
-        /// Replace Image in PDF File using Local Image Stream
-        /// </summary>
-        /// <param name="pageNumber"></param>
-        /// <param name="newLocation"></param>
-        /// <returns></returns>
+       /// <summary>
+       ///  Replace Image in PDF File using Local Image Stream
+       /// </summary>
+       /// <param name="pageNumber"></param>
+       /// <param name="imageIndex"></param>
+       /// <param name="imageStream"></param>
+       /// <returns></returns>
         public bool ReplaceImageUsingStream(int pageNumber, int imageIndex, Stream imageStream)
         {
             try
@@ -640,7 +641,8 @@ namespace Saaspose.Pdf
         /// Replace Image in PDF document using Image File uploaded on Server
         /// </summary>
         /// <param name="pageNumber"></param>
-        /// <param name="newLocation"></param>
+        /// <param name="imageIndex"></param>
+        /// <param name="fileName"></param>
         /// <returns></returns>
         public bool ReplaceImageUsingFile(int pageNumber, int imageIndex, string fileName)
         {
