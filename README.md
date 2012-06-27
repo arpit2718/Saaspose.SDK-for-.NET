@@ -49,6 +49,11 @@ This repository contains Saaspose.SDK for .NET source code. This SDK allows you 
 <td>This namespace provides the features to manipulate bar codes using Saaspose.BarCode.</td>
 </tr>
 
+<tr>
+<td>Saaspose.Ocr</td>
+<td>This namespace provides the features to extract text from images using Saaspose.Ocr.</td>
+</tr>
+
 
 </table>
 
