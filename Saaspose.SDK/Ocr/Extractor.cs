@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Saaspose.OCR
 {
-    class Extractor
+    public class Extractor
     {
         public Extractor() { }
         /// <summary>

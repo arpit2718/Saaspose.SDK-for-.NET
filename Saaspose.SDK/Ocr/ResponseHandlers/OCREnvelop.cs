@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Saaspose.OCR
 {
-    class OCREnvelop
+    public class OCREnvelop
     {
         public List<Part> Parts { get; set; }
     }

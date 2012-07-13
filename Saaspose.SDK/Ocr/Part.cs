@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Saaspose.OCR
 {
-    class Part
+    public class Part
     {
         public bool Bold { get; set; }
         public string FontName { get; set; }
