@@ -134,6 +134,11 @@
     <Compile Include="Common\Product.cs" />
     <Compile Include="Common\SaasposeApp.cs" />
     <Compile Include="Common\Utils.cs" />
+    <Compile Include="Ocr\Enums\LanguageName.cs" />
+    <Compile Include="Ocr\Extractor.cs" />
+    <Compile Include="Ocr\Part.cs" />
+    <Compile Include="Ocr\ResponseHandlers\OCREnvelop.cs" />
+    <Compile Include="Ocr\ResponseHandlers\OCRResponse .cs" />
     <Compile Include="Pdf\Annotation.cs" />
     <Compile Include="Pdf\AnnotationEditor.cs" />
     <Compile Include="Pdf\Attachment.cs" />

@@ -33,3 +33,8 @@ D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Deb
 D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
 D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
 D:\AP Data\Saaspose\HQTest\For Github\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+C:\Saaspose\New\GitHub\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+C:\Saaspose\New\GitHub\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+C:\Saaspose\New\GitHub\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+C:\Saaspose\New\GitHub\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+C:\Saaspose\New\GitHub\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
