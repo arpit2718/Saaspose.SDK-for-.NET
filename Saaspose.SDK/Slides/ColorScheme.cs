@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Saaspose.Slides;
 
-namespace Saaspose.SDK.Slides
+namespace Saaspose.Slides
 {
     public class ColorScheme
     {

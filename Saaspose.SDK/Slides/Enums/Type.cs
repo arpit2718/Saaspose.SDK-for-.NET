@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Saaspose.SDK.Slides.Enums
+namespace Saaspose.Slides
 {
     public enum Type
     {

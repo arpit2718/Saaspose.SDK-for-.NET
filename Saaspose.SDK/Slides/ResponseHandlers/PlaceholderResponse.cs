@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Saaspose.SDK.Slides.ResponseHandlers
+namespace Saaspose.Slides
 {
     public class PlaceholderResponse : Saaspose.Common.BaseResponse
     {

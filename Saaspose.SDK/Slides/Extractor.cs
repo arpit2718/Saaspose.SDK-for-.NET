@@ -6,8 +6,7 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Saaspose.SDK.Slides;
-using Saaspose.SDK.Slides.ResponseHandlers;
+using Saaspose.Slides;
 
 
 namespace Saaspose.Slides

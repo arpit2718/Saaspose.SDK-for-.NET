@@ -6,7 +6,7 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Saaspose.SDK.Words;
+using Saaspose.Words;
 
 namespace Saaspose.Words
 {
