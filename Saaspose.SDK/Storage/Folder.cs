@@ -46,6 +46,39 @@ namespace Saaspose.Storage
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Retrives the list of files and folders under the specified folder. 
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="strFolder">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <returns></returns>
+        public List<Saaspose.Storage.File> GetFilesList(string strFolder, StorageType storageType, string storageName)
+        {
+            try
+            {
+                //Build URI to get files list
+                StringBuilder strURI = new StringBuilder(this.strURIFolder + strFolder);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+                
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(Utils.Sign(strURI.ToString()), "GET"));
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+                return FileCollection.getFilesList(strJSON);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         /// <summary>
         /// Deletes a file from the storage. Use "FolderName/FileName" to specify a file under specific folder.
         /// </summary>
@@ -61,6 +94,35 @@ namespace Saaspose.Storage
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Deletes a file from the storage. Use "FolderName/FileName" to specify a file under specific folder. 
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="strFileName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        public void DeleteFile(string strFileName, StorageType storageType, string storageName)
+        {
+            try
+            {
+                //Build URI to Delete file
+                StringBuilder strURI = new StringBuilder(this.strURIFile + strFileName);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+                Utils.ProcessCommand(Utils.Sign(strURI.ToString()), "DELETE");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Deletes an empty folder from the storage. Use "FolderName/SubFolderName" for sub folders.
         /// </summary>
@@ -70,6 +132,34 @@ namespace Saaspose.Storage
             try
             {
                 Utils.ProcessCommand(Utils.Sign(this.strURIFolder + strFolderName), "DELETE");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes an empty folder from the storage. Use "FolderName/SubFolderName" for sub folders. 
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="strFolderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        public void DeleteFolder(string strFolderName, StorageType storageType, string storageName)
+        {
+            try
+            {
+                //Build URI to Delete folder
+                StringBuilder strURI = new StringBuilder(this.strURIFolder + strFolderName);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+                Utils.ProcessCommand(Utils.Sign(strURI.ToString()), "DELETE");
             }
             catch (Exception ex)
             {
@@ -95,6 +185,40 @@ namespace Saaspose.Storage
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Uploads a file from your local machine to specified folder / subfolder on Saaspose / 3rd party storage. 
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="strFile"></param>
+        /// <param name="strFolder">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of storage.</param>
+        public void UploadFile(string strFile, string strFolder, StorageType storageType, string storageName)
+        {
+            try
+            {
+                string strRemoteFileName = System.IO.Path.GetFileName(strFile);
+
+                //Build URI to upload file
+                StringBuilder strURI = new StringBuilder(this.strURIFile + (strFolder == "" ? "" : strFolder + "/") + 
+                    strRemoteFileName);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+
+                string strURISigned = Utils.Sign(strURI.ToString());
+                Utils.UploadFileBinary(strFile, strURISigned, "PUT");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         /// <summary>
         /// Creates a folder under the specified folder. If no path specified, creates a folder under the root folder.
         /// </summary>
@@ -106,6 +230,36 @@ namespace Saaspose.Storage
                 string strURIRequest = this.strURIFolder + strFolder;
                 string strURISigned = Utils.Sign(strURIRequest);
                 
+                Utils.ProcessCommand(strURISigned, "PUT");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Creates a folder under the specified folder. If no path specified, creates a folder under the root folder.
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="strFolder">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        public void CreateFolder(string strFolder, StorageType storageType, string storageName)
+        {
+            try
+            {
+                //Build URI to create folder
+                StringBuilder strURI = new StringBuilder(this.strURIFolder + strFolder);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+                string strURISigned = Utils.Sign(strURI.ToString());
+
                 Utils.ProcessCommand(strURISigned, "PUT");
             }
             catch (Exception ex)
@@ -137,6 +291,43 @@ namespace Saaspose.Storage
                 throw new Exception(ex.Message);
             }    
         }
+
+        /// <summary>
+        /// Checks whether file or folder exists on the Saaspose/3rd party storage. 
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="strFolderOrFile">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <returns></returns>
+        public FileExist FileExist(string strFolderOrFile, StorageType storageType, string storageName)
+        {
+            try
+            {
+                //Build URI to check file
+                StringBuilder strURI = new StringBuilder(this.strURIExist + strFolderOrFile);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+                string strURISigned = Utils.Sign(strURI.ToString());
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(strURISigned, "GET"));
+                string strJSON = reader.ReadToEnd();
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                ExistResponse existResponse = JsonConvert.DeserializeObject<ExistResponse>(parsedJSON.ToString());
+
+                return existResponse.FileExist;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Provides the total / free disc size in bytes for your app.
         /// </summary>
@@ -161,6 +352,64 @@ namespace Saaspose.Storage
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Provides the total / free disc size in bytes for your 3rd party storage.
+        /// </summary>
+        /// <returns></returns>
+        public DiscUsage GetDiscUsage(StorageType storageType, string storageName)
+        {
+            try
+            {
+                //Build URI to get disc usage
+                StringBuilder strURI = new StringBuilder(this.strURIDisc);
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        strURI.Append("?storage=" + storageName);
+                        break;
+                }
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(Utils.Sign(strURI.ToString()), "GET"));
+
+                string strJSON = reader.ReadToEnd();
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                DiscResponse discResponse = JsonConvert.DeserializeObject<DiscResponse>(parsedJSON.ToString());
+
+
+                return discResponse.DiscUsage;
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get file from Saaspose server. In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.
+        /// </summary>
+        /// <param name="fileName">file name on the serve. 
+        /// In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <returns></returns>
+        public Stream GetFile(string fileName, StorageType storageType, string storageName)
+        {
+            //Build URI to get file from server
+            StringBuilder strURI = new StringBuilder(this.strURIFile + fileName);
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("?storage=" + storageName);
+                    break;
+            }
+            return Utils.ProcessCommand(Utils.Sign(strURI.ToString()), "GET");
         }
 
         /// <summary>

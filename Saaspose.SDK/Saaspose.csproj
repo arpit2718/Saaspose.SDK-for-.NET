@@ -244,6 +244,7 @@
     <Compile Include="Storage\Folder.cs" />
     <Compile Include="Storage\FolderResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Storage\StorageType.cs" />
     <Compile Include="Words\Converter.cs" />
     <Compile Include="Words\Document.cs" />
     <Compile Include="Words\DocumentBuilder.cs" />

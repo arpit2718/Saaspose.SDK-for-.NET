@@ -6,7 +6,6 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Saaspose.Slides;
 
 
 namespace Saaspose.Slides
@@ -54,6 +53,44 @@ namespace Saaspose.Slides
         }
 
         /// <summary>
+        /// Gets total number of images in a presentation from a 3rd party storage
+        /// </summary>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns>Total number of images</returns>
+        public int GetImageCount(StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get image count
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/images" + (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+
+            //Deserializes the JSON to a object. 
+            ImagesResponse imagesResponse = JsonConvert.DeserializeObject<ImagesResponse>(parsedJSON.ToString());
+
+            return imagesResponse.Images.List.Count;
+
+        }
+
+        /// <summary>
         /// Gets number of images in the specified slide
         /// </summary>
         /// <param name="slideNumber"></param>
@@ -63,6 +100,44 @@ namespace Saaspose.Slides
             //build URI to get image count
             string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber.ToString() + "/images";
             string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            ImagesResponse imagesResponse = JsonConvert.DeserializeObject<ImagesResponse>(parsedJSON.ToString());
+
+            return imagesResponse.Images.List.Count;
+        }
+
+        /// <summary>
+        /// Gets number of images in the specified slide from a 3rd party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns></returns>
+        public int GetImageCount(int slideNumber, StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get image count
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/slides/" + slideNumber.ToString() + "/images" +
+                (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
 
             Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
 
@@ -105,6 +180,63 @@ namespace Saaspose.Slides
             {
                 //Parse the json string to JObject
                 JObject parsedShapeJSON = ProcessURI(shapeURI.Uri.Href);
+
+                //Deserializes the JSON to a object. 
+                ShapeResponse shapeResponse = JsonConvert.DeserializeObject<ShapeResponse>(parsedShapeJSON.ToString());
+                shapes.Add(shapeResponse.Shape);
+            }
+
+            return shapes;
+        }
+
+        /// <summary>
+        /// Gets all shapes in a slide from a 3rd party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns></returns>
+        public List<Shape> GetShapes(int slideNumber, StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get shapes
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/slides/" + slideNumber + "/shapes" +
+                (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            ShapesResponse shapesResponse = JsonConvert.DeserializeObject<ShapesResponse>(parsedJSON.ToString());
+
+            List<Shape> shapes = new List<Shape>();
+            foreach (ShapeURI shapeURI in shapesResponse.ShapeList.Links)
+            {
+                StringBuilder uri = new StringBuilder(shapeURI.Uri.Href +
+                (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+                switch (storageType)
+                {
+                    case StorageType.AmazonS3:
+                        uri.Append("&storage=" + storageName);
+                        break;
+                }
+                //Parse the json string to JObject
+                JObject parsedShapeJSON = ProcessURI(uri.ToString());
 
                 //Deserializes the JSON to a object. 
                 ShapeResponse shapeResponse = JsonConvert.DeserializeObject<ShapeResponse>(parsedShapeJSON.ToString());
@@ -158,6 +290,42 @@ namespace Saaspose.Slides
             ColorSchemeResponse colorSchemeResponse = JsonConvert.DeserializeObject<ColorSchemeResponse>(parsedJSON.ToString());
             return colorSchemeResponse.ColorScheme;
         }
+
+        /// <summary>
+        /// Gets color scheme from the specified slide of a presentation from a third party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <returns></returns>
+        public ColorScheme GetColorScheme(int slideNumber, StorageType storageType, string storageName)
+        {
+            //Build URI to get color scheme
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + 
+                FileName + "/slides/" + slideNumber + "/theme/colorScheme");
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("?storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            ColorSchemeResponse colorSchemeResponse = JsonConvert.DeserializeObject<ColorSchemeResponse>(parsedJSON.ToString());
+            return colorSchemeResponse.ColorScheme;
+        }
+
         /// <summary>
         /// Get font scheme from the specified slide
         /// </summary>
@@ -169,6 +337,41 @@ namespace Saaspose.Slides
             string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber + "/theme/fontScheme";
 
             string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            FontSchemeResponse fontSchemeResponse = JsonConvert.DeserializeObject<FontSchemeResponse>(parsedJSON.ToString());
+            return fontSchemeResponse.FontScheme;
+        }
+
+        /// <summary>
+        /// Get font scheme from the specified slide of a presentation from a third party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <returns></returns>
+        public FontScheme GetFontScheme(int slideNumber, StorageType storageType, string storageName)
+        {
+            //build URI to get font scheme
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" +
+                FileName + "/slides/" + slideNumber + "/theme/fontScheme");
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("?storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
 
             Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
 
@@ -208,6 +411,42 @@ namespace Saaspose.Slides
         }
 
         /// <summary>
+        /// Get format scheme from the specified slide of a presentation from a third party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <returns></returns>
+        public FormatScheme GetFormatScheme(int slideNumber, StorageType storageType, string storageName)
+        {
+            //build URI to get format scheme
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" +
+                FileName + "/slides/" + slideNumber + "/theme/formatScheme");
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("?storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            FormatSchemeResponse formatSchemeResponse = JsonConvert.DeserializeObject<FormatSchemeResponse>(parsedJSON.ToString());
+            return formatSchemeResponse.FormatScheme;
+
+        }
+
+        /// <summary>
         /// Get placeholder count from a particular slide
         /// </summary>
         /// <param name="slideNumber"></param>
@@ -217,6 +456,43 @@ namespace Saaspose.Slides
             //build URI to get placeholder count
             string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber.ToString() + "/placeholders";
             string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            PlaceholdersResponse PlaceholderResponse = JsonConvert.DeserializeObject<PlaceholdersResponse>(parsedJSON.ToString());
+            return PlaceholderResponse.Placeholders.PlaceholderLinks.Count;
+        }
+
+        /// <summary>
+        /// Get placeholder count in a slide from a 3rd party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns></returns>
+        public int GetPlaceholderCount(int slideNumber, StorageType storageType, 
+            string storageName, string folderName)
+        {
+            //build URI to get placeholder count
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+               + "/slides/" + slideNumber.ToString() + "/placeholders" +
+               (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
 
             Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
 
@@ -241,6 +517,44 @@ namespace Saaspose.Slides
             //build URI to get placeholder
             string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides/" + slideNumber.ToString() + "/placeholders/" + PlaceholderIndex;
             string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            PlaceholderResponse PlaceholderResponse = JsonConvert.DeserializeObject<PlaceholderResponse>(parsedJSON.ToString());
+            return PlaceholderResponse.Placeholder;
+        }
+
+        /// <summary>
+        /// Get placeholder in a slide from a 3rd party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="PlaceholderIndex"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns></returns>
+        public Placeholder GetPlaceholder(int slideNumber, int PlaceholderIndex, 
+            StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get placeholder
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/slides/" + slideNumber.ToString() + "/placeholders/" + PlaceholderIndex +
+                (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
 
             Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
 

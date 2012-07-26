@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Saaspose.Slides
+namespace Saaspose.SDK.Slides
 {
     public class CustomProperty
     {

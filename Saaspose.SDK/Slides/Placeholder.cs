@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Saaspose.Slides;
-using Saaspose.Slides;
 
 namespace Saaspose.Slides
 {

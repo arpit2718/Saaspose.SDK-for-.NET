@@ -6,7 +6,7 @@ using Saaspose.Storage;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Saaspose.Slides;
+using Saaspose.SDK.Slides;
 using System.Xml.Serialization;
 using System.Xml;
 
@@ -29,6 +29,30 @@ namespace Saaspose.Slides
         public string FileName { get; set; }
 
         /// <summary>
+        /// Saves the document into various formats without uploading to any storage
+        /// </summary>
+        /// <param name="inputFile">Input file stream</param>
+        /// <param name="outputPath">Save the output file to</param>
+        /// <param name="saveFormat">Output format to save</param>
+        public void Convert(Stream inputFile, string outputPath, SaveFormat saveFormat)
+        {
+
+            //build URI to convert presentation
+            string strURI = Product.BaseProductUri + "/slides/convert?format=" + saveFormat;
+
+            string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "PUT", inputFile);
+
+            //Save output file
+            using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
+            {
+                Utils.CopyStream(responseStream, fileStream);
+            }
+            responseStream.Close();
+        }
+
+        /// <summary>
         /// Finds the slide count of the specified PowerPoint document
         /// </summary>
         /// <returns>slide count</returns>
@@ -37,6 +61,43 @@ namespace Saaspose.Slides
             //build URI to get slide count
             string strURI = Product.BaseProductUri + "/slides/" + FileName + "/slides";
             string signedURI = Utils.Sign(strURI);
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            SlidesResponse slidesResponse = JsonConvert.DeserializeObject<SlidesResponse>(parsedJSON.ToString());
+
+            int count = slidesResponse.Slides.SlideList.Count;
+            return count;
+        }
+
+        /// <summary>
+        /// Finds the slide count of the specified PowerPoint document from a third party storage
+        /// </summary>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns>slide count</returns>
+        public int GetSlideCount(StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get slide count
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/slides" + (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            
+            string signedURI = Utils.Sign(strURI.ToString());
 
             Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
 
@@ -238,6 +299,80 @@ namespace Saaspose.Slides
         }
 
         /// <summary>
+        /// Gets all the text items in a presentation from a 3rd party storage
+        /// </summary>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns>A list containing all the text items</returns>
+        public List<TextItem> GetAllTextItems(StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get all text items in a presentation
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/textItems" + (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            TextItemsResponse textItemsResponse = JsonConvert.DeserializeObject<TextItemsResponse>(parsedJSON.ToString());
+
+            return textItemsResponse.TextItems.Items;
+        }
+
+        /// <summary>
+        /// Gets all the text items in a slide from a 3rd party storage
+        /// </summary>
+        /// <param name="slideNumber"></param>
+        /// <param name="withEmpty">Set this to true to include items for shapes without text</param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        /// <returns>A list containing all the text items in a slide</returns>
+        public List<TextItem> GetAllTextItems(int slideNumber, bool withEmpty,
+            StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to get all text items in a slide
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+                + "/slides/" + slideNumber + "/textItems?withEmpty=" + withEmpty +
+                (string.IsNullOrEmpty(folderName) ? "" : "&folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            TextItemsResponse textItemsResponse = JsonConvert.DeserializeObject<TextItemsResponse>(parsedJSON.ToString());
+
+            return textItemsResponse.TextItems.Items;
+        }
+
+        /// <summary>
         /// Gets all the text items in a slide
         /// </summary>
         /// <param name="slideNumber"></param>
@@ -287,6 +422,74 @@ namespace Saaspose.Slides
         }
 
         /// <summary>
+        /// Saves the document from third party storage into various formats
+        /// </summary>
+        /// <param name="outputPath"></param>
+        /// <param name="saveFormat"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        public void SaveAs(string outputPath, SaveFormat saveFormat, StorageType storageType, string storageName, string folderName)
+        {
+
+            //build URI
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+               + "?format=" + saveFormat + (string.IsNullOrEmpty(folderName) ? "" : "&folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
+            {
+                Utils.CopyStream(responseStream, fileStream);
+            }
+            responseStream.Close();
+        }
+
+        /// <summary>
+        /// Saves a particular slide into various formats from a 3rd party storage
+        /// </summary>
+        /// <param name="outputPath"></param>
+        /// <param name="slideNumber"></param>
+        /// <param name="imageFormat"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        public void SaveSlideAs(string outputPath, int slideNumber, ImageFormat imageFormat, 
+            StorageType storageType, string storageName, string folderName)
+        {
+            //build URI
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+               + "/slides/" + slideNumber + "?format=" + imageFormat + 
+               (string.IsNullOrEmpty(folderName) ? "" : "&folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
+            {
+                Utils.CopyStream(responseStream, fileStream);
+            }
+            responseStream.Close();
+        }
+
+        /// <summary>
         /// Saves a particular slide into various formats
         /// </summary>
         /// <param name="outputPath"></param>
@@ -309,6 +512,43 @@ namespace Saaspose.Slides
             responseStream.Close();
         }
 
+        /// <summary>
+        /// Saves a particular slide into various formats with specified width and height from a 3rd party storage
+        /// </summary>
+        /// <param name="outputPath"></param>
+        /// <param name="slideNumber"></param>
+        /// <param name="imageFormat"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="storageType"></param>
+        /// <param name="storageName">Name of the storage</param>
+        /// <param name="folderName">In case of Amazon S3 storage the folder's path starts with Amazon S3 Bucket name.</param>
+        public void SaveSlideAs(string outputPath, int slideNumber, ImageFormat imageFormat, int width, int height,
+            StorageType storageType, string storageName, string folderName)
+        {
+            //build URI
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+               + "/slides/" + slideNumber + "?format=" + imageFormat + "&width=" + width + "&height=" + height +
+               (string.IsNullOrEmpty(folderName) ? "" : "&folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "GET");
+
+            using (Stream fileStream = System.IO.File.OpenWrite(outputPath))
+            {
+                Utils.CopyStream(responseStream, fileStream);
+            }
+            responseStream.Close();
+        }
+        
         /// <summary>
         /// Saves a particular slide into various formats with specified width and height
         /// </summary>
@@ -397,6 +637,38 @@ namespace Saaspose.Slides
             }
             return retval;
         }
+
+        public bool DeleteAllSlides(StorageType storageType, string storageName, string folderName)
+        {
+            //build URI to remove all the slides
+            StringBuilder strURI = new StringBuilder(Product.BaseProductUri + "/slides/" + FileName
+              + "/slides" + (string.IsNullOrEmpty(folderName) ? "" : "?folder=" + folderName));
+
+            switch (storageType)
+            {
+                case StorageType.AmazonS3:
+                    strURI.Append("&storage=" + storageName);
+                    break;
+            }
+            string signedURI = Utils.Sign(strURI.ToString());
+
+            Stream responseStream = Utils.ProcessCommand(signedURI, "DELETE");
+            StreamReader reader = new StreamReader(responseStream);
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            //Deserializes the JSON to a object. 
+            BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+            if (baseResponse.Code == "200" && baseResponse.Status == "OK")
+                return true;
+            else
+                return false;
+
+        }
+        
         public bool DeleteAllSlides()
         {
             //build URI to remove all the slides
