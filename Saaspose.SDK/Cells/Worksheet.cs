@@ -69,7 +69,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/rows?offset=" + offset + "&count=" + count;
+            strURI += "/worksheets/" + WorkSheetName + "/cells/rows?offset=" + offset + "&count=" + count;
 
             //sign URI
             string signedURI = Utils.Sign(strURI);
@@ -85,7 +85,7 @@ namespace Saaspose.Cells
             //Deserializes the JSON to a object. 
             WorksheetResponse worksheetResponse = JsonConvert.DeserializeObject<WorksheetResponse>(parsedJSON.ToString());
 
-            return worksheetResponse.Cells.CellList;
+            return worksheetResponse.Rows.RowsList;
         }
 
         public List<LinkResponse> GetColumnsList(int offset, int count)
@@ -96,7 +96,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/columns?offset=" + offset + "&count=" + count;
+            strURI += "/worksheets/" + WorkSheetName + "/cells/columns?offset=" + offset + "&count=" + count;
 
             //sign URI
             string signedURI = Utils.Sign(strURI);

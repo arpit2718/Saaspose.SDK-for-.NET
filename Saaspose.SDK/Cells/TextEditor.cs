@@ -176,7 +176,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/" + WorkSheetName + "/textItems";
+            strURI += "/worksheets/" + WorkSheetName + "/textItems";
 
             //sign URI
             string signedURI = Utils.Sign(strURI);

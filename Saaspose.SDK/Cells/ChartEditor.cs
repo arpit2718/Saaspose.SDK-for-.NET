@@ -29,7 +29,7 @@ namespace Saaspose.Cells
             {
                 //build URI to get page count
                 string strURI = Product.BaseProductUri + "/cells/" + FileName;
-                strURI += "/worksheets/" + WorkSheetName + "/charts/?chartType=" + chartType + "&upperLeftRow=" + upperLeftRow +
+                strURI += "/worksheets/" + WorkSheetName + "/charts?chartType=" + chartType + "&upperLeftRow=" + upperLeftRow +
                     "&upperLeftColumn=" + upperLeftColumn + "&lowerRightRow=" + lowerRightRow + "&lowerRightColumn=" + lowerRightColumn;
                 
                 string signedURI = Utils.Sign(strURI);
@@ -148,7 +148,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/charts/" + chartIndex + "/chartArea/fillFormat";
+            strURI += "/worksheets/" + WorkSheetName + "/charts/" + chartIndex + "/chartArea/border";
 
             //sign URI
             string signedURI = Utils.Sign(strURI);
