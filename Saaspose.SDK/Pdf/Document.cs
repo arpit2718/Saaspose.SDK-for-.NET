@@ -394,6 +394,59 @@ namespace Saaspose.Pdf
         }
 
         /// <summary>
+        /// Merge two or more Pdf documents. A new pdf file will be generated.
+        /// </summary>
+        /// <param name="sourceFiles"></param>        
+        /// <returns></returns>
+
+        public bool MergeDocuments(String[] sourceFiles)
+        {
+
+            try
+            {
+                //New PDF Filename
+                String mergedFileName = FileName;
+
+                if (sourceFiles.Length < 2)
+                {
+                    throw new Exception("Two or more files are requred to merge.");
+                }
+
+
+                //build URI to get page count
+                String strURI = Product.BaseProductUri + "/pdf/" + mergedFileName + "/merge";
+                String signedURI = Utils.Sign(strURI);
+
+                SourceFilesList sourcefileslist = new SourceFilesList();
+                sourcefileslist.List = sourceFiles;
+
+                string jsondata = JsonConvert.SerializeObject(sourcefileslist);
+
+                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT", jsondata, "json"));
+
+                //further process JSON response
+                string strJSON = reader.ReadToEnd();
+
+                //Parse the json string to JObject
+                JObject parsedJSON = JObject.Parse(strJSON);
+
+                BaseResponse stream = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+                if (stream.Code == "200" && stream.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        /// <summary>
         /// Appends two Pdf documents. The newPdf is appended at the end of basePdf
         /// </summary>
         /// <param name="basePdf"></param>
