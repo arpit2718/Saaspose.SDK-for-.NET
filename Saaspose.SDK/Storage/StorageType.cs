@@ -5,11 +5,11 @@ using System.Text;
 namespace Saaspose.Storage
 {
     /// <summary>
-    /// represents the image formats in which converted images can be saved
+    /// represents the storage type (Amazon S3, DropBox, Google Drive, Google Cloud or Windows Azure etc.)
     /// </summary>
     public enum StorageType
     {
-        Saaspose,
-        AmazonS3 
+        ThirdParty,
+        AmazonS3,
     }
 }
