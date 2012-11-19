@@ -53,3 +53,8 @@ C:\Saaspose\Saaspose.Words for .NET\GitHub\New6\Saaspose.SDK-for-.NET\Saaspose.S
 C:\Saaspose\Saaspose.Words for .NET\GitHub\New6\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
 C:\Saaspose\Saaspose.Words for .NET\GitHub\New6\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
 C:\Saaspose\Saaspose.Words for .NET\GitHub\New6\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
