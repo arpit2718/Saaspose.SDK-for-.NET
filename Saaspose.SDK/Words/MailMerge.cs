@@ -18,13 +18,14 @@ namespace Saaspose.Words
         /// <param name="strXML"></param>
         /// <param name="saveformat"></param>
         /// <param name="output"></param>
-        
-        public void ExecuteMailMerege(string FileName, string strXML, SaveFormat saveformat, string output)
+
+        public void ExecuteMailMerege(string FileName, string strXML, SaveFormat saveformat, string output, string documentFolder = "")
         {
             try
             {
                 //build URI to get Image
-                string strURI = Product.BaseProductUri + "/words/" + FileName + "/executeMailMerge";
+                string strURI = Product.BaseProductUri + "/words/" + FileName + "/executeMailMerge" +
+                    (documentFolder == "" ? "" : "?folder=" + documentFolder);
 
                 string signedURI = Utils.Sign(strURI);
 
@@ -45,7 +46,7 @@ namespace Saaspose.Words
 
                 //build URI
                 strURI = Product.BaseProductUri + "/words/" + nodes.Current.InnerXml;
-                strURI += "?format=" + saveformat;
+                strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
 
                 //sign URI
                 signedURI = Utils.Sign(strURI);
@@ -73,12 +74,13 @@ namespace Saaspose.Words
         /// <param name="strXML"></param>
         /// <param name="saveformat"></param>
         /// <param name="output"></param>
-        public void ExecuteMailMeregewithRegions(string FileName, string strXML, SaveFormat saveformat, string output)
+        public void ExecuteMailMeregewithRegions(string FileName, string strXML, SaveFormat saveformat, string output, string documentFolder = "")
         {
             try
             {
                 //build URI to get Image
-                string strURI = Product.BaseProductUri + "/words/" + FileName + "/executeMailMerge?withRegions=true";
+                string strURI = Product.BaseProductUri + "/words/" + FileName + "/executeMailMerge?withRegions=true" +
+                    (documentFolder == "" ? "" : "&folder=" + documentFolder);
 
                 string signedURI = Utils.Sign(strURI);
 
@@ -99,7 +101,7 @@ namespace Saaspose.Words
 
                 //build URI
                 strURI = Product.BaseProductUri + "/words/" + nodes.Current.InnerXml;
-                strURI += "?format=" + saveformat;
+                strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
 
                 //sign URI
                 signedURI = Utils.Sign(strURI);
@@ -127,12 +129,13 @@ namespace Saaspose.Words
         /// <param name="strXML"></param>
         /// <param name="saveformat"></param>
         /// <param name="output"></param>
-        public void ExecuteTemplate(string FileName, string strXML, SaveFormat saveformat, string output)
+        public void ExecuteTemplate(string FileName, string strXML, SaveFormat saveformat, string output, string documentFolder = "")
         {
             try
             {
                 //build URI to get Image
-                string strURI = Product.BaseProductUri + "/words/" + FileName + "/executeTemplate";
+                string strURI = Product.BaseProductUri + "/words/" + FileName + "/executeTemplate" +
+                    (documentFolder == "" ? "" : "?folder=" + documentFolder);
 
                 string signedURI = Utils.Sign(strURI);
 
@@ -153,7 +156,7 @@ namespace Saaspose.Words
 
                 //build URI
                 strURI = Product.BaseProductUri + "/words/" + nodes.Current.InnerXml;
-                strURI += "?format=" + saveformat;
+                strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
 
                 //sign URI
                 signedURI = Utils.Sign(strURI);

@@ -58,3 +58,8 @@ E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saas
 E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
 E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
 E:\Google Drive\Saaspose\Development Repos\dotnettest\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
+D:\Aspose Downloads\Saaspose\Repositories\GitHub\DotNetSDK\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.dll
+D:\Aspose Downloads\Saaspose\Repositories\GitHub\DotNetSDK\Saaspose.SDK-for-.NET\Saaspose.SDK\bin\Debug\Saaspose.SDK.pdb
+D:\Aspose Downloads\Saaspose\Repositories\GitHub\DotNetSDK\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\ResolveAssemblyReference.cache
+D:\Aspose Downloads\Saaspose\Repositories\GitHub\DotNetSDK\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.dll
+D:\Aspose Downloads\Saaspose\Repositories\GitHub\DotNetSDK\Saaspose.SDK-for-.NET\Saaspose.SDK\obj\Debug\Saaspose.SDK.pdb
