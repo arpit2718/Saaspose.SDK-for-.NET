@@ -24,14 +24,16 @@ namespace Saaspose.Words
         /// <param name="format"></param>
         /// <param name="isTop"></param>
         /// <param name="SetPageNumberOnFirstPage"></param>
+        /// <param name="documentFolder"></param>
 
-        public Boolean insertPageNumber(string FileName, string alignment, string format, Boolean isTop, Boolean SetPageNumberOnFirstPage)
+        public Boolean insertPageNumber(string FileName, string alignment, string format, Boolean isTop, Boolean SetPageNumberOnFirstPage, string documentFolder = "")
         {
             try
             {
                 //build URI to get Image
-                string strURI = Product.BaseProductUri + "/words/" + FileName + "/insertPageNumbers";
-                
+                string strURI = Product.BaseProductUri + "/words/" + FileName + "/insertPageNumbers" +
+                    (documentFolder == "" ? "" : "?folder=" + documentFolder);
+
                 string signedURI = Utils.Sign(strURI);
 
                 //serialize the JSON request content
@@ -42,15 +44,17 @@ namespace Saaspose.Words
                 field.SetPageNumberOnFirstPage = SetPageNumberOnFirstPage;
 
                 string strJSON = JsonConvert.SerializeObject(field);
+                JObject pJSON = null;
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON))
+                {
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        string strResponse = reader.ReadToEnd();
 
-                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
-
-                StreamReader reader = new StreamReader(responseStream);
-                string strResponse = reader.ReadToEnd();
-
-                //Parse the json string to JObject
-                JObject pJSON = JObject.Parse(strResponse);
-
+                        //Parse the json string to JObject
+                        pJSON = JObject.Parse(strResponse);
+                    }
+                }
                 BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(pJSON.ToString());
 
                 if (baseResponse.Code == "200" && baseResponse.Status == "OK")
@@ -69,7 +73,8 @@ namespace Saaspose.Words
         /// Gets all merge filed names from document
         /// </summary>
         /// <param name="FileName"></param>
-        public List<string> GetMailMergeFieldNames(string FileName)
+        /// <param name="documentFolder"></param>
+        public List<string> GetMailMergeFieldNames(string FileName, string documentFolder = "")
         {
             try
             {
@@ -79,16 +84,16 @@ namespace Saaspose.Words
 
                 //build URI
                 string strURI = Product.BaseProductUri + "/words/" + FileName;
-                strURI += "/mailMergeFieldNames";
+                strURI += "/mailMergeFieldNames" + (documentFolder == "" ? "" : "?folder=" + documentFolder); ;
 
                 //sign URI
                 string signedURI = Utils.Sign(strURI);
-
-                StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
-
-                //further process JSON response
-                string strJSON = reader.ReadToEnd();
-
+                string strJSON = null;
+                using (StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET")))
+                {
+                    //further process JSON response
+                    strJSON = reader.ReadToEnd();
+                }
                 //Parse the json string to JObject
                 JObject parsedJSON = JObject.Parse(strJSON);
 

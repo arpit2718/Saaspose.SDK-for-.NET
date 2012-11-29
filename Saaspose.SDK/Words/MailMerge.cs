@@ -18,8 +18,11 @@ namespace Saaspose.Words
         /// <param name="strXML"></param>
         /// <param name="saveformat"></param>
         /// <param name="output"></param>
+        /// <param name="documentFolder"></param>
+        /// <param name="deleteFromStorage"></param>
 
-        public void ExecuteMailMerege(string FileName, string strXML, SaveFormat saveformat, string output, string documentFolder = "")
+        public void ExecuteMailMerege(string FileName, string strXML, SaveFormat saveformat, string output,
+            string documentFolder = "", bool deleteFromStorage = false)
         {
             try
             {
@@ -29,41 +32,55 @@ namespace Saaspose.Words
 
                 string signedURI = Utils.Sign(strURI);
 
-                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strXML, "xml");
+                string outputFileName = null;
 
-                StreamReader reader = new StreamReader(responseStream);
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strXML, "xml"))
+                {
+                    string strResponse = null;
 
-                //further process JSON response
-                string strResponse = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        //further process JSON response
+                        strResponse = reader.ReadToEnd();
+                    }
 
-                MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(strResponse));
-                XPathDocument xPathDoc = new XPathDocument(ms);
-                XPathNavigator navigator = xPathDoc.CreateNavigator();
+                    using (MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(strResponse)))
+                    {
+                        XPathDocument xPathDoc = new XPathDocument(ms);
+                        XPathNavigator navigator = xPathDoc.CreateNavigator();
 
-                //get File Name
-                XPathNodeIterator nodes = navigator.Select("/SaaSposeResponse/Document/FileName");
-                nodes.MoveNext();
-
-                //build URI
-                strURI = Product.BaseProductUri + "/words/" + nodes.Current.InnerXml;
-                strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
-
+                        //get File Name
+                        XPathNodeIterator nodes = navigator.Select("/SaaSposeResponse/Document/FileName");
+                        nodes.MoveNext();
+                        outputFileName = nodes.Current.InnerXml;
+                        //build URI
+                        strURI = Product.BaseProductUri + "/words/" + outputFileName;
+                        strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
+                    }
+                }
                 //sign URI
                 signedURI = Utils.Sign(strURI);
 
                 //get response stream
-                responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-                using (Stream fileStream = System.IO.File.OpenWrite(output))
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "GET"))
                 {
-                    Utils.CopyStream(responseStream, fileStream);
-                }
-                responseStream.Close();
 
+                    using (Stream fileStream = System.IO.File.OpenWrite(output))
+                    {
+                        Utils.CopyStream(responseStream, fileStream);
+                    }
+                }
+
+                if (deleteFromStorage)
+                {
+                    signedURI = Utils.Sign(Product.BaseProductUri + "/storage/file/" +
+                        (documentFolder == "" ? outputFileName : documentFolder + "/" + outputFileName));
+                    Utils.ProcessCommand(signedURI, "DELETE");
+                }
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
         }
 
@@ -74,7 +91,10 @@ namespace Saaspose.Words
         /// <param name="strXML"></param>
         /// <param name="saveformat"></param>
         /// <param name="output"></param>
-        public void ExecuteMailMeregewithRegions(string FileName, string strXML, SaveFormat saveformat, string output, string documentFolder = "")
+        /// <param name="documentFolder"></param>
+        /// <param name="deleteFromStorage"></param>
+        public void ExecuteMailMeregewithRegions(string FileName, string strXML, SaveFormat saveformat, string output,
+            string documentFolder = "", bool deleteFromStorage = false)
         {
             try
             {
@@ -84,41 +104,54 @@ namespace Saaspose.Words
 
                 string signedURI = Utils.Sign(strURI);
 
-                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strXML, "xml");
+                string outputFileName = null;
 
-                StreamReader reader = new StreamReader(responseStream);
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strXML, "xml"))
+                {
+                    string strResponse = null;
 
-                //further process JSON response
-                string strResponse = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        //further process JSON response
+                        strResponse = reader.ReadToEnd();
+                    }
 
-                MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(strResponse));
-                XPathDocument xPathDoc = new XPathDocument(ms);
-                XPathNavigator navigator = xPathDoc.CreateNavigator();
+                    using (MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(strResponse)))
+                    {
+                        XPathDocument xPathDoc = new XPathDocument(ms);
+                        XPathNavigator navigator = xPathDoc.CreateNavigator();
 
-                //get File Name
-                XPathNodeIterator nodes = navigator.Select("/SaaSposeResponse/Document/FileName");
-                nodes.MoveNext();
-
-                //build URI
-                strURI = Product.BaseProductUri + "/words/" + nodes.Current.InnerXml;
-                strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
-
+                        //get File Name
+                        XPathNodeIterator nodes = navigator.Select("/SaaSposeResponse/Document/FileName");
+                        nodes.MoveNext();
+                        outputFileName = nodes.Current.InnerXml;
+                        //build URI
+                        strURI = Product.BaseProductUri + "/words/" + outputFileName;
+                        strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
+                    }
+                }
                 //sign URI
                 signedURI = Utils.Sign(strURI);
 
                 //get response stream
-                responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-                using (Stream fileStream = System.IO.File.OpenWrite(output))
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "GET"))
                 {
-                    Utils.CopyStream(responseStream, fileStream);
+                    using (Stream fileStream = System.IO.File.OpenWrite(output))
+                    {
+                        Utils.CopyStream(responseStream, fileStream);
+                    }
                 }
-                responseStream.Close();
 
+                if (deleteFromStorage)
+                {
+                    signedURI = Utils.Sign(Product.BaseProductUri + "/storage/file/" +
+                        (documentFolder == "" ? outputFileName : documentFolder + "/" + outputFileName));
+                    Utils.ProcessCommand(signedURI, "DELETE");
+                }
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
         }
 
@@ -129,7 +162,10 @@ namespace Saaspose.Words
         /// <param name="strXML"></param>
         /// <param name="saveformat"></param>
         /// <param name="output"></param>
-        public void ExecuteTemplate(string FileName, string strXML, SaveFormat saveformat, string output, string documentFolder = "")
+        /// <param name="documentFolder"></param>
+        /// <param name="deleteFromStorage"></param>
+        public void ExecuteTemplate(string FileName, string strXML, SaveFormat saveformat, string output,
+            string documentFolder = "", bool deleteFromStorage = false)
         {
             try
             {
@@ -139,41 +175,54 @@ namespace Saaspose.Words
 
                 string signedURI = Utils.Sign(strURI);
 
-                Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strXML, "xml");
+                string outputFileName = null;
 
-                StreamReader reader = new StreamReader(responseStream);
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strXML, "xml"))
+                {
+                    string strResponse = null;
 
-                //further process JSON response
-                string strResponse = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        //further process JSON response
+                        strResponse = reader.ReadToEnd();
+                    }
 
-                MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(strResponse));
-                XPathDocument xPathDoc = new XPathDocument(ms);
-                XPathNavigator navigator = xPathDoc.CreateNavigator();
+                    using (MemoryStream ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(strResponse)))
+                    {
+                        XPathDocument xPathDoc = new XPathDocument(ms);
+                        XPathNavigator navigator = xPathDoc.CreateNavigator();
 
-                //get File Name
-                XPathNodeIterator nodes = navigator.Select("/SaaSposeResponse/Document/FileName");
-                nodes.MoveNext();
-
-                //build URI
-                strURI = Product.BaseProductUri + "/words/" + nodes.Current.InnerXml;
-                strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
-
+                        //get File Name
+                        XPathNodeIterator nodes = navigator.Select("/SaaSposeResponse/Document/FileName");
+                        nodes.MoveNext();
+                        outputFileName = nodes.Current.InnerXml;
+                        //build URI
+                        strURI = Product.BaseProductUri + "/words/" + outputFileName;
+                        strURI += "?format=" + saveformat + (documentFolder == "" ? "" : "&folder=" + documentFolder);
+                    }
+                }
                 //sign URI
                 signedURI = Utils.Sign(strURI);
 
                 //get response stream
-                responseStream = Utils.ProcessCommand(signedURI, "GET");
-
-                using (Stream fileStream = System.IO.File.OpenWrite(output))
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "GET"))
                 {
-                    Utils.CopyStream(responseStream, fileStream);
+                    using (Stream fileStream = System.IO.File.OpenWrite(output))
+                    {
+                        Utils.CopyStream(responseStream, fileStream);
+                    }
                 }
-                responseStream.Close();
 
+                if (deleteFromStorage)
+                {
+                    signedURI = Utils.Sign(Product.BaseProductUri + "/storage/file/" +
+                        (documentFolder == "" ? outputFileName : documentFolder + "/" + outputFileName));
+                    Utils.ProcessCommand(signedURI, "DELETE");
+                }
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
         }
     }

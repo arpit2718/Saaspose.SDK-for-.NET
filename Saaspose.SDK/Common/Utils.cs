@@ -208,33 +208,38 @@ namespace Saaspose.Common
 
                 req.Method = strHttpCommand;
                 req.ContentType = "application/x-www-form-urlencoded";
-                
+
 
                 req.AllowWriteStreamBuffering = true;
 
                 // Retrieve request stream 
-                System.IO.Stream reqStream = req.GetRequestStream();
-
-                // Open the local file
-                System.IO.FileStream rdr = new System.IO.FileStream(localFile, System.IO.FileMode.Open);
-
-                // Allocate byte buffer to hold file contents
-                byte[] inData = new byte[4096];
-
-                // loop through the local file reading each data block
-                //  and writing to the request stream buffer
-                int bytesRead = rdr.Read(inData, 0, inData.Length);
-                while (bytesRead > 0)
+                using (System.IO.Stream reqStream = req.GetRequestStream())
                 {
-                    reqStream.Write(inData, 0, bytesRead);
-                    bytesRead = rdr.Read(inData, 0, inData.Length);
+                    // Open the local file
+                    using (System.IO.FileStream rdr = new System.IO.FileStream(localFile, System.IO.FileMode.Open))
+                    {
+                        // Allocate byte buffer to hold file contents
+                        byte[] inData = new byte[4096];
+
+                        // loop through the local file reading each data block
+                        //  and writing to the request stream buffer
+                        int bytesRead = rdr.Read(inData, 0, inData.Length);
+                        while (bytesRead > 0)
+                        {
+                            reqStream.Write(inData, 0, bytesRead);
+                            bytesRead = rdr.Read(inData, 0, inData.Length);
+                        }
+
+                    }
                 }
 
-                rdr.Close();
-                reqStream.Close();
+                string statusCode = null;
 
-                System.Net.HttpWebResponse response = (System.Net.HttpWebResponse)req.GetResponse();
-                return response.StatusCode.ToString();
+                using (System.Net.HttpWebResponse response = (System.Net.HttpWebResponse)req.GetResponse())
+                {
+                    statusCode = response.StatusCode.ToString();
+                }
+                return statusCode;
             }
             catch (System.Net.WebException webex)
             {
