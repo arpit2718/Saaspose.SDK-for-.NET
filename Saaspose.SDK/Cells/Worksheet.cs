@@ -1001,7 +1001,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/rows?offset=" + offset + "&count=" + count;
+            strURI += "/worksheets/" + WorkSheetName + "/cells/rows?offset=" + offset + "&count=" + count;
 
             //sign URI
             string signedURI = Utils.Sign(strURI);
@@ -1028,7 +1028,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/rows/" + rowIndex;
+            strURI += "/worksheets/" + WorkSheetName + "/cells/rows/" + rowIndex;
 
             //sign URI
             string signedURI = Utils.Sign(strURI);
@@ -1055,7 +1055,7 @@ namespace Saaspose.Cells
 
             //build URI
             string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
-            strURI += "/worksheets/" + WorkSheetName + "/rows/" + rowIndex;
+            strURI += "/worksheets/" + WorkSheetName + "/cells/rows/" + rowIndex;
 
             //sign URI
             string signedURI = Utils.Sign(strURI);
