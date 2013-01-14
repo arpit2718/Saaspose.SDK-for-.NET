@@ -8,12 +8,12 @@ namespace Saaspose.Cells
     public class Protection
     {
         public Protection()
-        { 
-        
+        {
+
         }
 
-        public ProtectionType ProtectionType { get; set;}
-        public string Password { get; set;}
- 
+        public string ProtectionType { get; set; }
+        public string Password { get; set; }
+
     }
 }

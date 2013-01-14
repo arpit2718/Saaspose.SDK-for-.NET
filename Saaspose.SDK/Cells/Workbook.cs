@@ -10,8 +10,8 @@ using Newtonsoft.Json;
 namespace Saaspose.Cells
 {
     public class Workbook
-    {        
-       
+    {
+
         /// <summary>
         /// Workbook Constructor, set the file name and password
         /// </summary>
@@ -20,7 +20,7 @@ namespace Saaspose.Cells
         {
             FileName = fileName;
         }
-        
+
 
         /// <summary>
         /// Get Document's properties
@@ -56,7 +56,7 @@ namespace Saaspose.Cells
                 WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
 
                 properties = docResponse.DocumentProperties.DocumentPropertyList;
-                                
+
                 //return document properties
                 return properties;
             }
@@ -134,7 +134,7 @@ namespace Saaspose.Cells
                 JObject pJSON = JObject.Parse(strResponse);
 
                 WorkbookResponse baseResponse = JsonConvert.DeserializeObject<WorkbookResponse>(pJSON.ToString());
-              
+
 
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace Saaspose.Cells
                 throw new Exception(ex.Message);
             }
         }
-       
+
         public bool RemoveAllProperties()
         {
             try
@@ -228,7 +228,7 @@ namespace Saaspose.Cells
                 //build URI to get page count
                 string strURI = Product.BaseProductUri + "/cells/" + FileName;
                 string signedURI = Utils.Sign(strURI);
-            
+
 
                 Stream responseStream = Utils.ProcessCommand(signedURI, "PUT");
 
@@ -355,7 +355,7 @@ namespace Saaspose.Cells
 
             return docResponse.Worksheets.WorksheetList.Count;
         }
-      
+
         public int GetNamesCount()
         {
             //check whether file is set or not
@@ -376,7 +376,7 @@ namespace Saaspose.Cells
 
             //Parse the json string to JObject
             JObject parsedJSON = JObject.Parse(strJSON);
-                     
+
             //Deserializes the JSON to a object. 
             WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
 
@@ -422,9 +422,10 @@ namespace Saaspose.Cells
 
                 //serialize the JSON request content
                 Encryption encyption = new Encryption();
-                encyption.EncryptionType = encryptionType;
+                encyption.EncriptionType = encryptionType.ToString();
+
+                encyption.KeyLength = keyLength;
                 encyption.Password = password;
-                encyption.Keylength = keyLength;
                 string strJSON = JsonConvert.SerializeObject(encyption);
 
                 Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
@@ -459,9 +460,9 @@ namespace Saaspose.Cells
 
                 //serialize the JSON request content
                 Protection protection = new Protection();
-                protection.ProtectionType = protectionType;
+                protection.ProtectionType = protectionType.ToString();
                 protection.Password = password;
-              
+
                 string strJSON = JsonConvert.SerializeObject(protection);
 
                 Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);
@@ -595,9 +596,9 @@ namespace Saaspose.Cells
 
                 //serialize the JSON request content
                 Encryption encyption = new Encryption();
-                
+
                 encyption.Password = password;
-                
+
                 string strJSON = JsonConvert.SerializeObject(encyption);
 
                 Stream responseStream = Utils.ProcessCommand(signedURI, "Delete", strJSON);
@@ -609,7 +610,7 @@ namespace Saaspose.Cells
                 JObject pJSON = JObject.Parse(strResponse);
 
                 BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(pJSON.ToString());
-              
+
                 if (baseResponse.Code == "200" && baseResponse.Status == "OK")
                     return true;
                 else
@@ -692,7 +693,7 @@ namespace Saaspose.Cells
                 return true;
             else
                 return false;
-        }      
+        }
 
         public void MergeWorkbook(string mergefileName)
         {
@@ -721,19 +722,19 @@ namespace Saaspose.Cells
                 //Deserializes the JSON to a object. 
                 WorkbookResponse docResponse = JsonConvert.DeserializeObject<WorkbookResponse>(parsedJSON.ToString());
 
-                
+
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-        }      
+        }
 
         /// <summary>
         /// Workbook name
         /// </summary>
         public string FileName { get; set; }
-       
+
 
     }
 }

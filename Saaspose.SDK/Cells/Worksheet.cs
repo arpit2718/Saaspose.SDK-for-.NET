@@ -26,7 +26,7 @@ namespace Saaspose.Cells
         /// <summary>
         /// 
         /// </summary>
-        public LinkResponse Link { get; set; }     
+        public LinkResponse Link { get; set; }
 
         /// <summary>
         /// 
@@ -276,7 +276,7 @@ namespace Saaspose.Cells
 
             return autoShapesResponse.AutoShape;
         }
-       
+
 
         /// <summary>
         /// 
@@ -342,12 +342,12 @@ namespace Saaspose.Cells
             return cellsResponse.Style;
         }
 
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="cellName"></param>
-       /// <param name="style"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
         public Style SetCellStyle(string cellName, Style style)
         {
             //check whether file is set or not
@@ -537,7 +537,7 @@ namespace Saaspose.Cells
 
             return picturesResponse.Picture;
         }
-       
+
         /// <summary>
         /// 
         /// </summary>
@@ -818,7 +818,7 @@ namespace Saaspose.Cells
 
             return worksheetResponse.Hyperlinks.Count;
         }
-        
+
 
         /// <summary>
         /// 
@@ -888,13 +888,13 @@ namespace Saaspose.Cells
                 return false;
         }
 
-       
+
         public bool MoveWorksheet(string worksheetName, Position position)
         {
             try
             {
                 //build URI to get page count
-                string strURI = Product.BaseProductUri + "/cells/" + FileName + "/worksheets/" +WorkSheetName+"/position";
+                string strURI = Product.BaseProductUri + "/cells/" + FileName + "/worksheets/" + WorkSheetName + "/position";
                 string signedURI = Utils.Sign(strURI);
 
                 //serialize the JSON request content
@@ -923,8 +923,8 @@ namespace Saaspose.Cells
             {
                 throw new Exception(ex.Message);
             }
-        }      
-         
+        }
+
 
         /// <summary>
         /// 
@@ -957,7 +957,7 @@ namespace Saaspose.Cells
 
             return formulaResponse.Value;
         }
- 
+
 
         public void SetCellValue(string cellName, string valueType, string value)
         {
@@ -965,10 +965,10 @@ namespace Saaspose.Cells
             {
                 //build URI to get page count
                 string strURI = Product.BaseProductUri + "/cells/" + FileName;
-                strURI += "/worksheets/" + WorkSheetName + "/cells/" +cellName +"?value="+value+"&type="+valueType;
+                strURI += "/worksheets/" + WorkSheetName + "/cells/" + cellName + "?value=" + value + "&type=" + valueType;
 
 
-                string signedURI = Utils.Sign(strURI);               
+                string signedURI = Utils.Sign(strURI);
 
                 Stream responseStream = Utils.ProcessCommand(signedURI, "POST");
 
@@ -985,7 +985,7 @@ namespace Saaspose.Cells
             {
                 throw new Exception(ex.Message);
             }
-        
+
         }
         /// <summary>
         /// 
@@ -1086,7 +1086,7 @@ namespace Saaspose.Cells
                 strURI += "/worksheets/" + WorkSheetName + "/sort?" + cellArea;
 
                 string signedURI = Utils.Sign(strURI);
-                
+
                 string strJSON = JsonConvert.SerializeObject(dataSort);
 
                 Stream responseStream = Utils.ProcessCommand(signedURI, "POST", strJSON);

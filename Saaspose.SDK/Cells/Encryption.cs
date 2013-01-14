@@ -8,13 +8,14 @@ namespace Saaspose.Cells
     public class Encryption
     {
         public Encryption()
-        { 
-        
+        {
+
         }
 
-        public EncryptionType EncryptionType { get; set;}
-        public string Password { get; set;}
-        public int Keylength { get; set;}       
+        public string EncriptionType { get; set; }
+        public int KeyLength { get; set; }
+        public string Password { get; set; }
+
 
     }
 }
