@@ -7,10 +7,11 @@ namespace Saaspose.Cells
     /// <summary>
     ///  Represents response from the calculateformula resource
     /// </summary>
-    public class CalcualteFormulaResponse : Saaspose.Common.BaseResponse
+    public class ValueResponse : Saaspose.Common.BaseResponse
     {
+        public int ValueType { get; set; }
 
-        public ValueResponse Value { get; set; }
+        public string Value { get; set; }
 
     }
 }

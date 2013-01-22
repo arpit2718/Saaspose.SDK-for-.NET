@@ -955,7 +955,7 @@ namespace Saaspose.Cells
             //Deserializes the JSON to a object. 
             CalcualteFormulaResponse formulaResponse = JsonConvert.DeserializeObject<CalcualteFormulaResponse>(parsedJSON.ToString());
 
-            return formulaResponse.Value;
+            return formulaResponse.Value.Value;
         }
 
 

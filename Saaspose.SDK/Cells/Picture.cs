@@ -36,7 +36,7 @@ namespace Saaspose.Cells
         public bool IsLockAspectRatio{ get; set;}
         public bool IsLocked { get; set;}
         public bool IsPrintable{ get; set;}
-        public string BorderLineColor { get; set;}
+        public Color BorderLineColor { get; set; }
         public double BorderWeight{ get; set;}
         public int OriginalHeight { get; set; }
         public int OriginalWidth { get; set; }

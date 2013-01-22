@@ -15,6 +15,8 @@ namespace Saaspose.Pdf
         XPS, 
         DOC,
         HTML,
+        pdfa1a,
+        pdfa1b,
         TeX
     }
 }

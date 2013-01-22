@@ -116,6 +116,7 @@
     <Compile Include="Cells\ResponseHandlers\TextEditorResponse.cs" />
     <Compile Include="Cells\ResponseHandlers\TextItemsResponse.cs" />
     <Compile Include="Cells\ResponseHandlers\ValidationsResponse.cs" />
+    <Compile Include="Cells\ResponseHandlers\ValueResponse.cs" />
     <Compile Include="Cells\ResponseHandlers\WorkbookResponse.cs" />
     <Compile Include="Cells\ResponseHandlers\WorksheetResponse.cs" />
     <Compile Include="Cells\ResponseHandlers\WorksheetsResponse.cs" />
