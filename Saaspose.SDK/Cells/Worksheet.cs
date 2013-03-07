@@ -537,6 +537,71 @@ namespace Saaspose.Cells
 
             return picturesResponse.Picture;
         }
+        /// <summary>
+        /// Adds a new picture
+        /// </summary>
+        /// <param name="upperLeftRow"></param>
+        /// /// <param name="upperLeftColumn"></param>
+        /// /// <param name="lowerRightRow"></param>
+        /// /// <param name="lowerRightColumn"></param>
+        /// /// <param name="picturePath">Specify if picture is located on Saaspoe storage or on local server.</param>
+        /// <returns></returns>
+        public bool AddPicture(string picturePath, PictureLocation location,
+            int upperLeftRow = 0, int upperLeftColumn = 0, int lowerRightRow = 0, int lowerRightColumn = 0)
+        {
+            //check whether file is set or not
+            if (FileName == "")
+                throw new Exception("No file name specified");
+            //check whether picturePath is set or not
+            if (picturePath == "" || picturePath == null)
+                throw new Exception("Please specify picture path");
+
+            StreamReader reader = null;
+
+            if (location == PictureLocation.Server)
+            {
+                //build URI
+                string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+                strURI += "/worksheets/" + WorkSheetName + "/pictures?upperLeftRow=" +
+                    upperLeftRow + "&upperLeftColumn=" + upperLeftColumn +
+                    "&lowerRightRow=" + lowerRightRow + "&lowerRightColumn=" + lowerRightColumn +
+                    "&picturePath=" + picturePath;
+
+                //sign URI
+                string signedURI = Utils.Sign(strURI);
+
+                reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT"));
+            }
+            else
+            {
+                using (FileStream stream = new FileStream(picturePath, FileMode.Open))
+                {
+                    //build URI
+                    string strURI = Saaspose.Common.Product.BaseProductUri + "/cells/" + FileName;
+                    strURI += "/worksheets/" + WorkSheetName + "/pictures?upperLeftRow=" +
+                        upperLeftRow + "&upperLeftColumn=" + upperLeftColumn +
+                        "&lowerRightRow=" + lowerRightRow + "&lowerRightColumn=" + lowerRightColumn;
+
+                    //sign URI
+                    string signedURI = Utils.Sign(strURI);
+
+                    reader = new StreamReader(Utils.ProcessCommand(signedURI, "PUT", stream));
+                }
+
+            }
+            //further process JSON response
+            string strJSON = reader.ReadToEnd();
+
+            //Parse the json string to JObject
+            JObject parsedJSON = JObject.Parse(strJSON);
+
+            BaseResponse baseResponse = JsonConvert.DeserializeObject<BaseResponse>(parsedJSON.ToString());
+
+            if (baseResponse.Code == "200" && baseResponse.Status == "OK")
+                return true;
+            else
+                return false;
+        }
 
         /// <summary>
         /// 

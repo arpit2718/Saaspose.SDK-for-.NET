@@ -74,6 +74,7 @@
     <Compile Include="Cells\Enums\ImageFormat.cs" />
     <Compile Include="Cells\Enums\LineType.cs" />
     <Compile Include="Cells\Enums\MirrorType.cs" />
+    <Compile Include="Cells\Enums\PictureLocation.cs" />
     <Compile Include="Cells\Enums\Position.cs" />
     <Compile Include="Cells\Enums\ProtectionType.cs" />
     <Compile Include="Cells\Enums\RectangleAlignmentType.cs" />
