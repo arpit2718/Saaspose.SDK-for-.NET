@@ -13,7 +13,7 @@ namespace Saaspose.Words
     /// <summary>
     /// Deals with document level aspects
     /// </summary>
-    public class Document 
+    public class Document
     {
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Saaspose.Words
         /// <link href="http://api.saaspose.com/v1.0/words/TestGet.doc/documentProperties" rel="self" />
         /// </summary>
         public List<LinkResponse> links { get; set; }
-        
+
         /// <summary>
         /// Document Constructor, set the file name
         /// </summary>
@@ -76,7 +76,7 @@ namespace Saaspose.Words
                 string signedURI = Utils.Sign(strURI);
 
                 StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
-                
+
                 //further process JSON response
                 string strJSON = reader.ReadToEnd();
 
@@ -236,7 +236,7 @@ namespace Saaspose.Words
                 string signedURI = Utils.Sign(strURI);
 
                 StreamReader reader = new StreamReader(Utils.ProcessCommand(signedURI, "GET"));
-                
+
                 //further process JSON response
                 string strJSON = reader.ReadToEnd();
 
@@ -317,6 +317,48 @@ namespace Saaspose.Words
                 throw new Exception(ex.Message);
             }
 
+        }
+
+
+        /// <summary>
+        /// Removes all headers and footers from a Word document
+        /// </summary>
+        /// <param name="folderPath">Storage folder where input document is; leave empty for root folder.</param>
+
+        public Boolean RemoveHeadersFooters(string folderPath)
+        {
+            try
+            {
+                //build URI
+                string strURI = Product.BaseProductUri + "/words/" + FileName + "/headersFooters" +
+                    ((folderPath == "" || folderPath == null) ? "" : "?folder=" + folderPath);
+
+                string signedURI = Utils.Sign(strURI);
+
+                BaseResponse baseResponse = null;
+                using (Stream responseStream = Utils.ProcessCommand(signedURI, "DELETE"))
+                {
+
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        string strResponse = reader.ReadToEnd();
+
+                        //Parse the json string to JObject
+                        JObject pJSON = JObject.Parse(strResponse);
+
+                        baseResponse = JsonConvert.DeserializeObject<BaseResponse>(pJSON.ToString());
+                    }
+                }
+                if (baseResponse.Code == "200" && baseResponse.Status == "OK")
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
     }
